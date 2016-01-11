@@ -1,0 +1,2 @@
+rm -v bin/*.class;
+rm -v bin/*/*.class;

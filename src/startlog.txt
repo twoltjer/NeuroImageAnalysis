@@ -1,0 +1,11 @@
+Log started at Sat Jan 09 21:39:39 PST 2016
+[dbg] 	[2016-00-09 21:39:40.326]	 	Creating thread GUI Thread
+[dbg] 	[2016-00-09 21:39:40.327]	 	Starting GUI Thread
+[dbg] 	[2016-00-09 21:39:40.328]	 	Running GUI Thread
+[dbg] 	[2016-00-09 21:39:40.331]	 	Running init sequence for scan window
+[dbg] 	[2016-00-09 21:39:40.366]	 	Log window width: 802
+[dbg] 	[2016-00-09 21:39:40.367]	 	Init sequence for scan window completed
+[dbg] 	[2016-00-09 21:39:40.397]	 	Scan window is being displayed
+[dbg] 	[2016-00-09 21:39:40.399]	 	Thread GUI Thread exiting.
+[dbg] 	[2016-00-09 21:39:43.339]	 	Running window close procedures
+[std] 	[2016-00-09 21:39:43.340]	 	Closing log
