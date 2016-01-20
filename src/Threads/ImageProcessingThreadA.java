@@ -1,10 +1,12 @@
 package Threads;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import image.ImageSet;
 import logging.Log;
 import system.Config;
+import system.Ops;
 
 public class ImageProcessingThreadA implements Runnable {
 	private String name;
@@ -24,19 +26,42 @@ public class ImageProcessingThreadA implements Runnable {
 
 		// Just for testing purposes, create one set from the entire directory.
 		// TODO: Change this later using the code at the bottom of the method
-		File[] imgFiles = scanDir.listFiles();
-		ImageSet set = new ImageSet();
-		for (File f : imgFiles) {
-			if(f.getName().indexOf("jpg") >= 0) {
-				if(f.exists())
-					set.addImageToSet(f);
-			}
-				
-		}
-		set.calculateImageData();
-		set.writeMonochromeImages(scanDir);
+		File[] dirFiles = scanDir.listFiles();
+		ArrayList<File> imageFiles = new ArrayList<File>();
 		// group by file names
-		// ArrayList<ImageSet> groupedFiles;
+		ArrayList<ImageSet> groupedFiles = new ArrayList<ImageSet>();
+		for (File f : dirFiles) {
+			if((f.getName().toLowerCase().indexOf("png") >= 0	) || (f.getName().toLowerCase().indexOf("jpg") >= 0	)) {
+				if(f.exists())
+					imageFiles.add(f);
+			}
+		}
+		
+		for(File image : imageFiles) {
+			int caseNumber = Ops.getCaseNumberFromFilename(image.getName());
+			boolean foundMatchingCase = false;
+			for(ImageSet i : groupedFiles) {
+				if(i.caseNumber == caseNumber) {
+					foundMatchingCase = true;
+					i.addImageToSet(image);
+				}
+			}
+			if(!foundMatchingCase) {
+				Log.write("Creating new set for image " + image.getName(), Log.STANDARD);
+				ImageSet newSet = new ImageSet(caseNumber);
+				newSet.addImageToSet(image);
+				groupedFiles.add(newSet);
+			}
+		}
+		System.out.println("Number of groups: " + groupedFiles.size());	
+		for(int i = 1; i <= groupedFiles.size(); i++) { 
+			ImageSet set = groupedFiles.get(i - 1);
+			Log.write("Processing case " + i + " of " + groupedFiles.size() + ": case number " + set.caseNumber, Log.STANDARD);
+			set.calculateImageData();
+			Log.write("Writing new image data", Log.STANDARD);
+			set.writeMonochromeImages(scanDir);
+		}
+		
 
 		logWrite("Thread " + this.name + " exiting.");
 	}
