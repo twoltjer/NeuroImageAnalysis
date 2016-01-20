@@ -24,11 +24,13 @@ public class ImageSet {
 	private double thresholdR;
 	private double thresholdG;
 	private double thresholdB;
-
-	public ImageSet() {
+	
+	public int caseNumber;
+	
+	public ImageSet(int caseNumber) {
 		this.files = new ArrayList<File>();
 		this.images = new ArrayList<BufferedImage>();
-
+		this.caseNumber = caseNumber;
 	}
 
 	/**
@@ -40,7 +42,8 @@ public class ImageSet {
 		this.files.add(f);
 		BufferedImage img = null;
 		try {
-			img = ImageIO.read(f);
+			 img = ImageIO.read(f);
+			
 		} catch (IOException e) {
 			Log.write("There was an error reading the image file", Log.ERROR);
 		}
@@ -63,9 +66,9 @@ public class ImageSet {
 		int nextPercentageInterval = 1;
 		int percentDone = 0;
 		int totalPixels = 0;
-		int totalR = 0;
-		int totalG = 0;
-		int totalB = 0;
+		long totalR = 0;
+		long totalG = 0;
+		long totalB = 0;
 		for (BufferedImage img : images) {
 			ProgressWindow.imageNumberReading++;
 			int imgHeight = img.getHeight();
@@ -124,10 +127,13 @@ public class ImageSet {
 		int percentDone = 0;
 		int totalPixels = 0;
 		
+		/*
 		Config.isProcessingImages = true;
 		Config.imageBeingWritten = images.get(0);
+
 		MRPIThread mrpi = new MRPIThread("MRPI");
 		mrpi.start();
+		*/
 		
 		for (File originalImageFile : this.files) {
 			BufferedImage originalImage = images.get(files.indexOf(originalImageFile));
@@ -157,7 +163,7 @@ public class ImageSet {
 			String newImageName = Config.MONOCHROME_IMAGE_FILENAME_PREFIX + "-" + Double.toString(Config.MONOCHROME_THRESHOLD_ADJUSTMENT_CONSTANT)+ "-" + originalImageFile.getName();
 			File newFile = new File(directory,newImageName);
 			try {
-				ImageIO.write(newImage, "JPEG", newFile);
+				ImageIO.write(newImage, "PNG", newFile);
 			} catch (IOException e) {
 				Log.write("There was a problem writing the new image file", Log.ERROR);
 			}
