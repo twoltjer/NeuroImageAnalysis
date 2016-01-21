@@ -1,6 +1,6 @@
 package test;
 
-import Threads.GUIThread;
+import threads.GUIThread;
 
 public class ThreadTest {
 	   public static void main(String args[]) {

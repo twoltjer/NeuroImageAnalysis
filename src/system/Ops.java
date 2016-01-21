@@ -2,8 +2,8 @@ package system;
 
 import java.util.ArrayList;
 
-import Threads.GUIThread;
-import Threads.ImageProcessingThreadA;
+import threads.GUIThread;
+import threads.ImageProcessingThreadA;
 import logging.Log;
 
 /**

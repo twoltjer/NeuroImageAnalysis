@@ -1,4 +1,4 @@
-package Threads;
+package threads;
 
 import gui.ScanWindow;
 import logging.Log;

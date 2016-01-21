@@ -1,4 +1,4 @@
-package Threads;
+package threads;
 
 import logging.Log;
 import logging.LogWindowManager;

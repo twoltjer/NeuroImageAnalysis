@@ -10,7 +10,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-import Threads.MRPIThread;
+import threads.MRPIThread;
 import gui.ProgressWindow;
 import logging.Log;
 import system.Config;
