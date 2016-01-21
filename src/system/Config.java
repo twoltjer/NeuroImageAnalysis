@@ -11,7 +11,7 @@ import java.util.ArrayList;
  * - The program's name - The default separator characters - The default ignored
  * characters
  * 
- * @author Thomas Woltjer
+ * @author twtduck
  *
  */
 public abstract class Config {

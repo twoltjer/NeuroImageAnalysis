@@ -3,10 +3,23 @@ package threads;
 import gui.ScanWindow;
 import logging.Log;
 
+/**
+ * A thread that starts the gui and that it runs in. Don't want something like
+ * the gui on the main thread, because it could slow other stuff down.
+ * 
+ * @author twtduck
+ * 
+ */
 public class GUIThread implements Runnable {
 	private String name;
 	private Thread thread;
 
+	/**
+	 * Classic constructor
+	 * 
+	 * @param name
+	 *            name of the thread. Hint: Use something like "debug thread"
+	 */
 	public GUIThread(String name) {
 		this.name = name;
 		logWrite("Creating thread " + name);
@@ -17,7 +30,7 @@ public class GUIThread implements Runnable {
 	 */
 	public void run() {
 		logWrite("Running " + this.name);
-		
+
 		// Create scan window
 		ScanWindow.init();
 		ScanWindow.show();

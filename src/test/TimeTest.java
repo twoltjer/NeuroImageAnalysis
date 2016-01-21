@@ -4,7 +4,7 @@ import java.util.Calendar;
 
 /**
  * This tests writing time stamps. It will continue writing them until the program is terminated. 
- * @author Thomas Woltjer
+ * @author twtduck
  */
 public class TimeTest {
 	public static void main(String[] args)

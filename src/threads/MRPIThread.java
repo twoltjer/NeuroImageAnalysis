@@ -9,10 +9,24 @@ import javax.swing.JLabel;
 import logging.Log;
 import system.Config;
 
+/**
+ * I've forgotten what MRPI stands for, but this thread is for displaying the
+ * images as they are being processed. It's not currently in the actual program
+ * but I'd really like it to be.
+ * 
+ * @author twtduck
+ * 
+ */
 public class MRPIThread implements Runnable {
 	private String name;
 	private Thread thread;
 
+	/**
+	 * Classic constructor
+	 * 
+	 * @param name
+	 *            name of the thread. Hint: Use something like "debug thread"
+	 */
 	public MRPIThread(String name) {
 		this.name = name;
 		logWrite("Creating thread " + name);
@@ -27,8 +41,8 @@ public class MRPIThread implements Runnable {
 			BufferedImage currentImage = Config.imageBeingWritten;
 			JFrame frame = new JFrame("Currently processing this image");
 			JLabel imgLabel = null;
-			while(Config.isProcessingImages) {
-				if(!currentImage.equals(Config.imageBeingWritten)) {
+			while (Config.isProcessingImages) {
+				if (!currentImage.equals(Config.imageBeingWritten)) {
 					currentImage = Config.imageBeingWritten;
 					imgLabel = new JLabel(new ImageIcon(currentImage));
 					frame.setVisible(false);

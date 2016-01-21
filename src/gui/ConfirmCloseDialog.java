@@ -13,6 +13,12 @@ import javax.swing.JLabel;
 import logging.Log;
 import system.Config;
 
+/**
+ * Class for managing a confirm close dialog. (Surprise, surprise)
+ * 
+ * @author twtduck
+ * 
+ */
 public class ConfirmCloseDialog {
 	private JFrame parent;
 	private JFrame dialogFrame;
@@ -20,6 +26,15 @@ public class ConfirmCloseDialog {
 	private JButton noButton;
 	private JLabel message;
 
+	/**
+	 * Creates the dialog.
+	 * 
+	 * @param parent
+	 *            the parent window, that is closed if the yes button is
+	 *            clicked.
+	 * @param message
+	 *            the message to display in the dialog
+	 */
 	public ConfirmCloseDialog(JFrame parent, String message) {
 		// Instantiate instance variables
 		this.parent = parent;
@@ -43,28 +58,48 @@ public class ConfirmCloseDialog {
 		pane.add(this.yesButton, dialogConstraints);
 		dialogConstraints.gridx = 1;
 		pane.add(this.noButton, dialogConstraints);
-		
+
 		// Add action listeners
 		this.yesButton.addActionListener(new ButtonClick());
 		this.noButton.addActionListener(new ButtonClick());
-		
+
 		this.dialogFrame.pack();
+
+		// TODO: Make this window prettier
 	}
 
+	/**
+	 * Displays the dialog window.
+	 */
 	public void show() {
 		this.dialogFrame.pack();
 		this.dialogFrame.setVisible(true);
 	}
-	
+
+	/**
+	 * A ButtonClick class to make the buttons in the confirm close dialogs
+	 * actually do something
+	 * 
+	 * @author twtduck
+	 * 
+	 */
 	class ButtonClick implements ActionListener {
+		/**
+		 * Code that runs when a button on the dialog is clicked
+		 */
 		public void actionPerformed(ActionEvent event) {
 			if (event.getSource().equals(yesButton)) {
+				// If the yes button is clicked, close the parent and the dialog
+				// frame.
 				parent.setVisible(false);
 				dialogFrame.dispose();
 			} else if (event.getSource().equals(noButton)) {
+				// If the no button is clicked, only close the dialog
 				dialogFrame.dispose();
-			} else {
-				Log.write("A button was clicked, but can't be found in the dialog box!", Log.ERROR);
+			} else { // I hope this never happens
+				Log.write(
+						"A button was clicked, but can't be found in the dialog box!",
+						Log.ERROR);
 			}
 		}
 	}

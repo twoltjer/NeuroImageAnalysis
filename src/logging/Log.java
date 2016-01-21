@@ -192,6 +192,10 @@ public abstract class Log {
 		}
 	}
 
+	/**
+	 * Tell the world if the log has been started
+	 * @return if this is instantiated
+	 */
 	public static boolean isInstantiated() {
 		return Log.isInstantiated;
 	}

@@ -10,13 +10,21 @@ import javax.swing.JProgressBar;
 import logging.Log;
 import system.Config;
 
+/**
+ * Class to manage the progress window. This window will show a progress bar or
+ * two visualizing the program's progress and will have a cancel button to stop
+ * processing. I'm considering having a disk space progress bar as well, because
+ * this thing is going to be handling a LOT of data one day.
+ * 
+ * @author twtduck
+ * 
+ */
 public abstract class ProgressWindow {
 	public static boolean isInitialized;
 	public static int imageNumberProcessing;
 	public static int totalNumberOfImages;
 	public static int imageNumberReading;
 
-	
 	// Window framework
 	private static JFrame windowFrame;
 	private static Container windowContentPane;
@@ -47,8 +55,9 @@ public abstract class ProgressWindow {
 		// Instantiate window elements
 		ProgressWindow.windowFrame = new JFrame(Config.PROGRAM_NAME__TITLE_BAR);
 		ProgressWindow.progressTitleLabel = new JLabel("Progress");
-		ProgressWindow.imageNumberLabel = new JLabel("Scanning image " + 
-				ProgressWindow.imageNumberProcessing + " of " + ProgressWindow.totalNumberOfImages);
-		
+		ProgressWindow.imageNumberLabel = new JLabel("Scanning image "
+				+ ProgressWindow.imageNumberProcessing + " of "
+				+ ProgressWindow.totalNumberOfImages);
+
 	}
 }

@@ -212,6 +212,11 @@ public abstract class ScanWindow {
 		JButtonManager.SCAN_WINDOW__SCAN_BUTTON.setVisible(Config.locationSet);
 	}
 
+	/**
+	 * Tell the world if this window is open. I wonder if this method is even necessary.
+	 * 
+	 * @return whether or not this window is open
+	 */
 	public static boolean isOpen() {
 		return windowFrame.isVisible();
 	}

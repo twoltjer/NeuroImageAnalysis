@@ -8,10 +8,25 @@ import logging.Log;
 import system.Config;
 import system.Ops;
 
+/**
+ * 
+ * This is where all the image processing happens. DEFINITELY don't want this as
+ * part of the main thread, because then the rest of the program can't continue
+ * until it's finished processing all the images.
+ * 
+ * @author twtduck
+ * 
+ */
 public class ImageProcessingThreadA implements Runnable {
 	private String name;
 	private Thread thread;
 
+	/**
+	 * Classic constructor
+	 * 
+	 * @param name
+	 *            name of the thread. Hint: Use something like "debug thread"
+	 */
 	public ImageProcessingThreadA(String name) {
 		this.name = name;
 		logWrite("Creating thread " + name);
@@ -31,37 +46,39 @@ public class ImageProcessingThreadA implements Runnable {
 		// group by file names
 		ArrayList<ImageSet> groupedFiles = new ArrayList<ImageSet>();
 		for (File f : dirFiles) {
-			if((f.getName().toLowerCase().indexOf("png") >= 0	) || (f.getName().toLowerCase().indexOf("jpg") >= 0	)) {
-				if(f.exists())
+			if ((f.getName().toLowerCase().indexOf("png") >= 0)
+					|| (f.getName().toLowerCase().indexOf("jpg") >= 0)) {
+				if (f.exists())
 					imageFiles.add(f);
 			}
 		}
-		
-		for(File image : imageFiles) {
+
+		for (File image : imageFiles) {
 			int caseNumber = Ops.getCaseNumberFromFilename(image.getName());
 			boolean foundMatchingCase = false;
-			for(ImageSet i : groupedFiles) {
-				if(i.caseNumber == caseNumber) {
+			for (ImageSet i : groupedFiles) {
+				if (i.caseNumber == caseNumber) {
 					foundMatchingCase = true;
 					i.addImageToSet(image);
 				}
 			}
-			if(!foundMatchingCase) {
-				Log.write("Creating new set for image " + image.getName(), Log.STANDARD);
+			if (!foundMatchingCase) {
+				Log.write("Creating new set for image " + image.getName(),
+						Log.STANDARD);
 				ImageSet newSet = new ImageSet(caseNumber);
 				newSet.addImageToSet(image);
 				groupedFiles.add(newSet);
 			}
 		}
-		System.out.println("Number of groups: " + groupedFiles.size());	
-		for(int i = 1; i <= groupedFiles.size(); i++) { 
+		System.out.println("Number of groups: " + groupedFiles.size());
+		for (int i = 1; i <= groupedFiles.size(); i++) {
 			ImageSet set = groupedFiles.get(i - 1);
-			Log.write("Processing case " + i + " of " + groupedFiles.size() + ": case number " + set.caseNumber, Log.STANDARD);
+			Log.write("Processing case " + i + " of " + groupedFiles.size()
+					+ ": case number " + set.caseNumber, Log.STANDARD);
 			set.calculateImageData();
 			Log.write("Writing new image data", Log.STANDARD);
 			set.writeMonochromeImages(scanDir);
 		}
-		
 
 		logWrite("Thread " + this.name + " exiting.");
 	}

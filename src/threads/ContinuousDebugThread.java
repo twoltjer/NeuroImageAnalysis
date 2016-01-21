@@ -3,10 +3,22 @@ package threads;
 import logging.Log;
 import logging.LogWindowManager;
 
+/**
+ * This thing can run all day long if necessary. Basically a separate thread for
+ * debugging. I last used it for trying to debug the scrool bar, but that didn't
+ * even work.
+ * 
+ * @author twtduck
+ * 
+ */
 public class ContinuousDebugThread implements Runnable {
 	private String name;
 	private Thread thread;
 
+	/**
+	 * Classic constructor
+	 * @param name name of the thread. Hint: Use something like "debug thread"
+	 */
 	public ContinuousDebugThread(String name) {
 		this.name = name;
 		logWrite("Creating thread " + name);
@@ -19,12 +31,23 @@ public class ContinuousDebugThread implements Runnable {
 		logWrite("Running " + this.name);
 		try {
 			while (true) {
-				
-				// Most recently, this was used to debug the scroll bar for the log window. 
-				System.out.println("Scroll bar value: " + LogWindowManager.getScroolpane().getVerticalScrollBar().getValue());
-				System.out.println("Scroll bar max value: " + LogWindowManager.getScroolpane().getVerticalScrollBar().getMaximum());
+
+				// Most recently, this was used to debug the scroll bar for the
+				// log window.
+				System.out.println("Scroll bar value: "
+						+ LogWindowManager.getScroolpane()
+								.getVerticalScrollBar().getValue());
+				System.out.println("Scroll bar max value: "
+						+ LogWindowManager.getScroolpane()
+								.getVerticalScrollBar().getMaximum());
 				System.out.println("Moving scroll bar to max value");
-				LogWindowManager.getScroolpane().getVerticalScrollBar().setValue(LogWindowManager.getScroolpane().getVerticalScrollBar().getMaximum());;
+				LogWindowManager
+						.getScroolpane()
+						.getVerticalScrollBar()
+						.setValue(
+								LogWindowManager.getScroolpane()
+										.getVerticalScrollBar().getMaximum());
+				;
 				// Let the thread sleep for a while. In milliseconds
 				Thread.sleep(100);
 			}
