@@ -7,7 +7,6 @@ import logging.Log;
 import system.Ops;
 
 public class JButtonClick implements ActionListener {
-	@Override
 	public void actionPerformed(ActionEvent event) 
 	{
 		if(event.getSource().equals(JButtonManager.SCAN_WINDOW__CHANGE_DIRECTORY_BUTTON))
