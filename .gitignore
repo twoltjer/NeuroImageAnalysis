@@ -1,1 +1,7 @@
 /bin/
+clean
+compile
+generate-javadoc
+.classpath
+.project
+.gitignore
