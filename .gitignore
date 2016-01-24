@@ -4,4 +4,4 @@ compile
 generate-javadoc
 .classpath
 .project
-.gitignore
+startlog.txt
