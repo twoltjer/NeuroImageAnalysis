@@ -4,4 +4,5 @@ compile
 generate-javadoc
 .classpath
 .project
+.settings
 startlog.txt
