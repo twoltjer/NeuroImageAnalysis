@@ -80,4 +80,38 @@ public abstract class Ops {
 		}
 		return false;
 	}
+
+	/**
+	 * Sums all the numbers in an array of doubles
+	 * 
+	 * @param arr
+	 *            the array of doubles
+	 * @return the sum of the array's values
+	 */
+	public static double doubleArraySum(double[] arr) {
+		double sum = 0d;
+		for (double val : arr) {
+			sum += val;
+		}
+		return sum;
+	}
+
+	/**
+	 * Finds the average standard deviation from the average value for a set of
+	 * doubles
+	 * 
+	 * @param arr
+	 *            the set of doubles
+	 * @param averageValue
+	 *            the average of that set
+	 * @return the average percent deviation
+	 */
+	public static double doubleArrayStandardDeviation(double[] arr,
+			double avg) {
+		double variance = 0;
+		for(double d : arr) {
+			variance += (Math.pow((d - avg), 2) / ((double) arr.length));
+		}
+		return Math.sqrt(variance);
+	}
 }

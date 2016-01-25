@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import image.ImageSet;
 import logging.Log;
+import metadata.MetaDataWriter;
 import system.Config;
 import system.Ops;
 
@@ -70,6 +71,9 @@ public class ImageProcessingThreadA implements Runnable {
 				groupedFiles.add(newSet);
 			}
 		}
+		
+		MetaDataWriter.init();
+		
 		System.out.println("Number of groups: " + groupedFiles.size());
 		for (int i = 1; i <= groupedFiles.size(); i++) {
 			ImageSet set = groupedFiles.get(i - 1);
@@ -80,6 +84,7 @@ public class ImageProcessingThreadA implements Runnable {
 			set.writeMonochromeImages(scanDir);
 		}
 
+		MetaDataWriter.close();
 		logWrite("Thread " + this.name + " exiting.");
 	}
 

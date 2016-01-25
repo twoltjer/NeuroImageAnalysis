@@ -6,12 +6,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-
 import gui.ProgressWindow;
 import logging.Log;
+import metadata.MetaDataWriter;
 import system.Config;
 
 /**
@@ -24,6 +21,7 @@ import system.Config;
 public class ImageSet {
 	private ArrayList<File> files;
 	private ArrayList<BufferedImage> images;
+	private ArrayList<BufferedImage> monoimages;
 	private double averageColorR;
 	private double averageColorG;
 	private double averageColorB;
@@ -40,6 +38,7 @@ public class ImageSet {
 	public ImageSet(int caseNumber) {
 		this.files = new ArrayList<File>();
 		this.images = new ArrayList<BufferedImage>();
+		this.monoimages = new ArrayList<BufferedImage>();
 		this.caseNumber = caseNumber;
 	}
 
@@ -165,13 +164,13 @@ public class ImageSet {
 							y)).getGreen();
 					int originalImageBlue = new Color(
 							originalImage.getRGB(x, y)).getBlue();
-					setPixelToWhite(newImage, x, y);
+					ImageOps.setPixelToWhite(newImage, x, y);
 					if (originalImageRed < thresholdR)
-						setPixelToBlack(newImage, x, y);
+						ImageOps.setPixelToBlack(newImage, x, y);
 					if (originalImageGreen < thresholdG)
-						setPixelToBlack(newImage, x, y);
+						ImageOps.setPixelToBlack(newImage, x, y);
 					if (originalImageBlue < thresholdB)
-						setPixelToBlack(newImage, x, y);
+						ImageOps.setPixelToBlack(newImage, x, y);
 					totalPixels++;
 					if (totalPixels == nextPercentageInterval) {
 						Log.write("Completed " + percentDone + "%",
@@ -189,12 +188,18 @@ public class ImageSet {
 			File newFile = new File(directory, newImageName);
 			try {
 				ImageIO.write(newImage, "PNG", newFile);
+				monoimages.add(newImage);
 			} catch (IOException e) {
 				Log.write("There was a problem writing the new image file",
 						Log.ERROR);
 			}
 		}
-		Config.isProcessingImages = false;
+		
+		// Write metadata
+		MetaDataWriter.writeData(this.monoimages, this.caseNumber);
+		
+		this.images.clear();
+		this.monoimages.clear();
 	}
 
 	/**
@@ -215,26 +220,4 @@ public class ImageSet {
 	public boolean equals(ImageSet i) {
 		return this.files.equals(i.getImageFiles());
 	}
-
-	/**
-	 * Sets a particular pixel to be white. This is used in generating the monochrome image.
-	 * @param img the image in which the pixel should be converted
-	 * @param x the x-coordinate of the pixel
-	 * @param y the y-coordinate of the pixel
-	 */
-	private void setPixelToWhite(BufferedImage img, int x, int y) {
-		img.setRGB(x, y, Color.white.getRGB());
-	}
-
-	/**
-	 * Sets a particular pixel to be black. This is used in generating the monochrome image.
-	 * @param img the image in which the pixel should be converted
-	 * @param x the x-coordinate of the pixel
-	 * @param y the y-coordinate of the pixel
-	 */
-	private void setPixelToBlack(BufferedImage img, int x, int y) {
-		img.setRGB(x, y, Color.black.getRGB());
-	}
-
-
 }

@@ -1,8 +1,6 @@
 package gui;
 
 import java.awt.Container;
-import java.awt.Font;
-
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
@@ -19,6 +17,7 @@ import system.Config;
  * @author twtduck
  * 
  */
+@SuppressWarnings("unused")
 public abstract class ProgressWindow {
 	public static boolean isInitialized;
 	public static int imageNumberProcessing;
