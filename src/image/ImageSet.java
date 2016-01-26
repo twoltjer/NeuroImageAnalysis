@@ -66,7 +66,6 @@ public class ImageSet {
 	 * Calculates the average color from the images, then the thresholds
 	 */
 	public void calculateImageData() {
-		ProgressWindow.totalNumberOfImages = images.size();
 
 		// displayImages();
 		int totalExpected = 0;
@@ -81,7 +80,6 @@ public class ImageSet {
 		long totalG = 0;
 		long totalB = 0;
 		for (BufferedImage img : images) {
-			ProgressWindow.imageNumberReading++;
 			int imgHeight = img.getHeight();
 			int imgWidth = img.getWidth();
 			for (int y = 0; y < imgHeight; y++) {
@@ -99,7 +97,8 @@ public class ImageSet {
 					totalB += pixelColor.getBlue();
 					totalPixels++;
 					if (totalPixels == nextPercentageInterval) {
-						System.out.println("Completed " + percentDone + "%");
+						ProgressWindow.setPercentage = percentDone;
+						ProgressWindow.updateBars();
 						percentDone++;
 						nextPercentageInterval += percentageInterval;
 					}
@@ -138,7 +137,7 @@ public class ImageSet {
 		for (BufferedImage i : this.images) {
 			totalExpected += i.getHeight() * i.getWidth();
 		}
-		int percentageInterval = totalExpected / 10;
+		int percentageInterval = totalExpected / 100;
 		int nextPercentageInterval = 1;
 		int percentDone = 0;
 		int totalPixels = 0;
@@ -173,9 +172,9 @@ public class ImageSet {
 						ImageOps.setPixelToBlack(newImage, x, y);
 					totalPixels++;
 					if (totalPixels == nextPercentageInterval) {
-						Log.write("Completed " + percentDone + "%",
-								Log.STANDARD);
-						percentDone += 10;
+						percentDone += 1;
+						ProgressWindow.setPercentage += 2;
+						ProgressWindow.updateBars();
 						nextPercentageInterval += percentageInterval;
 					}
 				}

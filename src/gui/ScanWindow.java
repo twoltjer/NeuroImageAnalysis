@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -137,15 +138,10 @@ public abstract class ScanWindow {
 		// Now is a good time to make it invisible if the location hasn't been set
 		ScanWindow.scanButton.setVisible(Config.locationSet);
 
-		// Set the window location on the screen to be to the right of the log
-		// window
-		// Test the width of the log window.
-		int logWidth = LogWindowManager.getSize().width;
-		Log.write("Log window width: " + logWidth, Log.DEBUG);
 		// Change the display location of the scan window
-		ScanWindow.windowFrame.setLocation(new Point(logWidth,
-				ScanWindow.windowFrame.getY()));
 
+		// Set size
+		
 		// Set the default as not displaying
 		ScanWindow.isDisplaying = false;
 
@@ -163,6 +159,8 @@ public abstract class ScanWindow {
 		if (ScanWindow.hasBeenInitialized) {
 			if (!ScanWindow.isDisplaying) {
 				ScanWindow.windowFrame.pack();
+				ScanWindow.windowFrame.setLocation(new Point(500,0));
+				ScanWindow.windowFrame.setSize(new Dimension(500,200));
 				ScanWindow.windowFrame.setVisible(true);
 				ScanWindow.isDisplaying = true;
 				Log.write("Scan window is being displayed", Log.DEBUG);

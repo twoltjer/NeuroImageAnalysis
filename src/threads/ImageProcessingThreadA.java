@@ -3,6 +3,7 @@ package threads;
 import java.io.File;
 import java.util.ArrayList;
 
+import gui.ProgressWindow;
 import image.ImageSet;
 import logging.Log;
 import metadata.MetaDataWriter;
@@ -19,6 +20,9 @@ import system.Ops;
  * 
  */
 public class ImageProcessingThreadA implements Runnable {
+	public static int totalSets = 0;
+	public static int setNumber = 0;
+	
 	private String name;
 	private Thread thread;
 
@@ -73,9 +77,13 @@ public class ImageProcessingThreadA implements Runnable {
 		}
 		
 		MetaDataWriter.init();
+		ImageProcessingThreadA.totalSets = groupedFiles.size();
+		ProgThread prog = new ProgThread("Progress window thread");
+		prog.start();
 		
-		System.out.println("Number of groups: " + groupedFiles.size());
-		for (int i = 1; i <= groupedFiles.size(); i++) {
+		for (int i = 1; i <= totalSets; i++) {
+			ProgressWindow.setNumber = i;
+			ProgressWindow.updateBars();
 			ImageSet set = groupedFiles.get(i - 1);
 			Log.write("Processing case " + i + " of " + groupedFiles.size()
 					+ ": case number " + set.caseNumber, Log.STANDARD);
@@ -85,6 +93,7 @@ public class ImageProcessingThreadA implements Runnable {
 		}
 
 		MetaDataWriter.close();
+		ProgressWindow.hide();
 		logWrite("Thread " + this.name + " exiting.");
 	}
 

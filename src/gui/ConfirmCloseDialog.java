@@ -51,6 +51,7 @@ public class ConfirmCloseDialog {
 
 		// Add elements
 		dialogConstraints.fill = GridBagConstraints.BOTH;
+		dialogConstraints.weightx = 1;
 		dialogConstraints.gridwidth = 2;
 		pane.add(this.message, dialogConstraints);
 		dialogConstraints.gridwidth = 1;
