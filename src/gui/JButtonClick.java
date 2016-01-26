@@ -20,12 +20,11 @@ import system.Ops;
 public class JButtonClick implements ActionListener {
 	public void actionPerformed(ActionEvent event) {
 		if (event.getSource().equals(
-				JButtonManager.SCAN_WINDOW__CHANGE_DIRECTORY_BUTTON)) {
-			Log.write("Clicked changed directory button!", Log.DEBUG);
+				ScanWindow.changeDirectoryButton)) {
 			GuiManager.changeDirectory();
 		} else if (event.getSource().equals(
-				JButtonManager.SCAN_WINDOW__SCAN_BUTTON)) {
-			JButtonManager.SCAN_WINDOW__SCAN_BUTTON.setVisible(false);
+				ScanWindow.scanButton)) {
+			ScanWindow.scanButton.setVisible(false);
 			Ops.startScan();
 		} else {
 			// TODO: Write other buttons

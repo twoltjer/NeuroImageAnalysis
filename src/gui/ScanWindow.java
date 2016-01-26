@@ -37,6 +37,10 @@ public abstract class ScanWindow {
 	private static JLabel SCAN_WINDOW__CURRENT_DIRECTORY_STATIC_LABEL;
 	private static JLabel SCAN_WINDOW__CURRENT_DIRECTORY_DYNAMIC_LABEL;
 
+	// Buttons
+	public static JButton changeDirectoryButton;
+	public static JButton scanButton;
+
 	/**
 	 * The init method for the ScanWindow class.
 	 * 
@@ -57,9 +61,9 @@ public abstract class ScanWindow {
 				"Currently in:");
 		ScanWindow.SCAN_WINDOW__CURRENT_DIRECTORY_DYNAMIC_LABEL = new JLabel(
 				Config.SCAN_WINDOW__DEFAULT_LOCATION_LABEL_TEXT);
-		JButtonManager.SCAN_WINDOW__SCAN_BUTTON = new JButton(
+		ScanWindow.scanButton = new JButton(
 				Config.SCAN_WINDOW__SCAN_BUTTON_TEXT);
-		JButtonManager.SCAN_WINDOW__CHANGE_DIRECTORY_BUTTON = new JButton(
+		ScanWindow.changeDirectoryButton = new JButton(
 				Config.SCAN_WINDOW__CHANGE_DIRECTORY_BUTTON_TEXT);
 		if (Config.locationSet)
 			ScanWindow.SCAN_WINDOW__CURRENT_DIRECTORY_DYNAMIC_LABEL
@@ -114,7 +118,7 @@ public abstract class ScanWindow {
 		windowConstraints.insets = new Insets(INSET_TOP, INSET_LEFT,
 				INSET_BOTTOM, INSET_RIGHT);
 		ScanWindow.windowContentPane.add(
-				JButtonManager.SCAN_WINDOW__CHANGE_DIRECTORY_BUTTON,
+				ScanWindow.changeDirectoryButton,
 				windowConstraints);
 
 		windowConstraints.gridx = 0;
@@ -122,16 +126,16 @@ public abstract class ScanWindow {
 		windowConstraints.gridwidth = 2;
 		windowConstraints.gridheight = 1;
 		ScanWindow.windowContentPane.add(
-				JButtonManager.SCAN_WINDOW__SCAN_BUTTON, windowConstraints);
+				ScanWindow.scanButton, windowConstraints);
 
 		// Add action listeners to the buttons
-		JButtonManager.SCAN_WINDOW__CHANGE_DIRECTORY_BUTTON
+		ScanWindow.changeDirectoryButton
 				.addActionListener(new JButtonClick());
-		JButtonManager.SCAN_WINDOW__SCAN_BUTTON
+		ScanWindow.scanButton
 				.addActionListener(new JButtonClick());
 
 		// Now is a good time to make it invisible if the location hasn't been set
-		JButtonManager.SCAN_WINDOW__SCAN_BUTTON.setVisible(Config.locationSet);
+		ScanWindow.scanButton.setVisible(Config.locationSet);
 
 		// Set the window location on the screen to be to the right of the log
 		// window
@@ -239,7 +243,7 @@ public abstract class ScanWindow {
 		Log.write("Updating scan window elements", Log.DEBUG);
 		ScanWindow.SCAN_WINDOW__CURRENT_DIRECTORY_DYNAMIC_LABEL
 				.setText(Config.location.getName());
-		JButtonManager.SCAN_WINDOW__SCAN_BUTTON.setVisible(Config.locationSet);
+		ScanWindow.scanButton.setVisible(Config.locationSet);
 	}
 
 	/**
