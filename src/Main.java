@@ -25,9 +25,7 @@ public class Main {
 		// Set defaults
 		try {
 			Config.setDefaultLists(args[0]);
-			System.out.println(args[0]);
 		} catch (Exception e) {
-			System.out.println("null");
 			Config.setDefaultLists(null);
 		}
 		
