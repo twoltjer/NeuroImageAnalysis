@@ -12,8 +12,7 @@ import system.Ops;
 public class Main {
 	/**
 	 * The function to start the program
-	 * @param args currently does nothing. In the future it could point to a start directory.
-	 * TODO: Point the start directory at the arguments passed to main()
+	 * @param args if there is an argument, the program interprets it as a predetermined scan directory
 	 */
 	public static void main(String[] args) {
 		// Start log
@@ -24,7 +23,13 @@ public class Main {
 		LogWindowManager.show();
 		
 		// Set defaults
-		Config.setDefaultLists();
+		try {
+			Config.setDefaultLists(args[0]);
+			System.out.println(args[0]);
+		} catch (Exception e) {
+			System.out.println("null");
+			Config.setDefaultLists(null);
+		}
 		
 		Ops.startGUI();
 	}

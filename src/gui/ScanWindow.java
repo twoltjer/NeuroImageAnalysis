@@ -22,7 +22,7 @@ import system.Ops;
  * that directory. This class is for creating and managing the scan window.
  * 
  * @author Thomas Woltjer
- *
+ * 
  */
 public abstract class ScanWindow {
 	// Window status
@@ -45,34 +45,38 @@ public abstract class ScanWindow {
 	 * It instantiates the window elements, creates the window framework, and
 	 * adds the elements to the framework.
 	 * 
-	 * It also creates a window listener to properly execute some code when the window is closed
+	 * It also creates a window listener to properly execute some code when the
+	 * window is closed
 	 */
 	public static void init() {
 		// Write to log that init is beginning
 		Log.write("Running init sequence for scan window", Log.DEBUG);
 
 		// Instantiate window elements
-		ScanWindow.SCAN_WINDOW__CURRENT_DIRECTORY_STATIC_LABEL = new JLabel("Currently in:");
+		ScanWindow.SCAN_WINDOW__CURRENT_DIRECTORY_STATIC_LABEL = new JLabel(
+				"Currently in:");
 		ScanWindow.SCAN_WINDOW__CURRENT_DIRECTORY_DYNAMIC_LABEL = new JLabel(
 				Config.SCAN_WINDOW__DEFAULT_LOCATION_LABEL_TEXT);
-		JButtonManager.SCAN_WINDOW__SCAN_BUTTON = new JButton(Config.SCAN_WINDOW__SCAN_BUTTON_TEXT);
-		JButtonManager.SCAN_WINDOW__CHANGE_DIRECTORY_BUTTON = new JButton(Config.SCAN_WINDOW__CHANGE_DIRECTORY_BUTTON_TEXT);
-
+		JButtonManager.SCAN_WINDOW__SCAN_BUTTON = new JButton(
+				Config.SCAN_WINDOW__SCAN_BUTTON_TEXT);
+		JButtonManager.SCAN_WINDOW__CHANGE_DIRECTORY_BUTTON = new JButton(
+				Config.SCAN_WINDOW__CHANGE_DIRECTORY_BUTTON_TEXT);
+		if (Config.locationSet)
+			ScanWindow.SCAN_WINDOW__CURRENT_DIRECTORY_DYNAMIC_LABEL
+					.setText(Config.location.toString());
 		// Create and configure window for adding elements
 		ScanWindow.windowFrame = new JFrame(Config.PROGRAM_NAME__TITLE_BAR);
 		ScanWindow.windowContentPane = windowFrame.getContentPane();
 		ScanWindow.windowContentPane.setLayout(new GridBagLayout());
 		GridBagConstraints windowConstraints = new GridBagConstraints();
-		
+
 		// Make the program exit in a safe way when the window is closed
-		ScanWindow.windowFrame.addWindowListener(new WindowAdapter()
-		{
-		    @Override
-			public void windowClosing(WindowEvent e)
-		    {
-		    	Log.write("Running window close procedures", Log.DEBUG);
-		        Ops.exit();
-		    }
+		ScanWindow.windowFrame.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				Log.write("Running window close procedures", Log.DEBUG);
+				Ops.exit();
+			}
 		});
 
 		// Add elements to window
@@ -80,13 +84,15 @@ public abstract class ScanWindow {
 		int INSET_LEFT = 5;
 		int INSET_BOTTOM = 0;
 		int INSET_RIGHT = 5;
-		windowConstraints.insets = new Insets(INSET_TOP, INSET_LEFT, INSET_BOTTOM, INSET_RIGHT);
+		windowConstraints.insets = new Insets(INSET_TOP, INSET_LEFT,
+				INSET_BOTTOM, INSET_RIGHT);
 
 		windowConstraints.gridx = 0;
 		windowConstraints.gridy = 0;
 		windowConstraints.gridwidth = 1;
 		windowConstraints.gridheight = 1;
-		ScanWindow.windowContentPane.add(SCAN_WINDOW__CURRENT_DIRECTORY_STATIC_LABEL, windowConstraints);
+		ScanWindow.windowContentPane.add(
+				SCAN_WINDOW__CURRENT_DIRECTORY_STATIC_LABEL, windowConstraints);
 
 		windowConstraints.gridx = 0;
 		windowConstraints.gridy = 1;
@@ -94,37 +100,48 @@ public abstract class ScanWindow {
 		windowConstraints.gridheight = 1;
 		INSET_BOTTOM = 5;
 		INSET_TOP = 0;
-		windowConstraints.insets = new Insets(INSET_TOP, INSET_LEFT, INSET_BOTTOM, INSET_RIGHT);
-		ScanWindow.windowContentPane.add(SCAN_WINDOW__CURRENT_DIRECTORY_DYNAMIC_LABEL, windowConstraints);
+		windowConstraints.insets = new Insets(INSET_TOP, INSET_LEFT,
+				INSET_BOTTOM, INSET_RIGHT);
+		ScanWindow.windowContentPane
+				.add(SCAN_WINDOW__CURRENT_DIRECTORY_DYNAMIC_LABEL,
+						windowConstraints);
 
 		windowConstraints.gridx = 1;
 		windowConstraints.gridy = 0;
 		windowConstraints.gridwidth = 1;
 		windowConstraints.gridheight = 2;
 		INSET_TOP = 5;
-		windowConstraints.insets = new Insets(INSET_TOP, INSET_LEFT, INSET_BOTTOM, INSET_RIGHT);
-		ScanWindow.windowContentPane.add(JButtonManager.SCAN_WINDOW__CHANGE_DIRECTORY_BUTTON, windowConstraints);
+		windowConstraints.insets = new Insets(INSET_TOP, INSET_LEFT,
+				INSET_BOTTOM, INSET_RIGHT);
+		ScanWindow.windowContentPane.add(
+				JButtonManager.SCAN_WINDOW__CHANGE_DIRECTORY_BUTTON,
+				windowConstraints);
 
 		windowConstraints.gridx = 0;
 		windowConstraints.gridy = 3;
 		windowConstraints.gridwidth = 2;
 		windowConstraints.gridheight = 1;
-		ScanWindow.windowContentPane.add(JButtonManager.SCAN_WINDOW__SCAN_BUTTON, windowConstraints);
+		ScanWindow.windowContentPane.add(
+				JButtonManager.SCAN_WINDOW__SCAN_BUTTON, windowConstraints);
 
 		// Add action listeners to the buttons
-		JButtonManager.SCAN_WINDOW__CHANGE_DIRECTORY_BUTTON.addActionListener(new JButtonClick());
-		JButtonManager.SCAN_WINDOW__SCAN_BUTTON.addActionListener(new JButtonClick());
-		
-		// Now is a good time to make it invisible
-		JButtonManager.SCAN_WINDOW__SCAN_BUTTON.setVisible(false);
+		JButtonManager.SCAN_WINDOW__CHANGE_DIRECTORY_BUTTON
+				.addActionListener(new JButtonClick());
+		JButtonManager.SCAN_WINDOW__SCAN_BUTTON
+				.addActionListener(new JButtonClick());
 
-		// Set the window location on the screen to be to the right of the log window
+		// Now is a good time to make it invisible if the location hasn't been set
+		JButtonManager.SCAN_WINDOW__SCAN_BUTTON.setVisible(Config.locationSet);
+
+		// Set the window location on the screen to be to the right of the log
+		// window
 		// Test the width of the log window.
 		int logWidth = LogWindowManager.getSize().width;
 		Log.write("Log window width: " + logWidth, Log.DEBUG);
 		// Change the display location of the scan window
-		ScanWindow.windowFrame.setLocation(new Point(logWidth,ScanWindow.windowFrame.getY()));
-		
+		ScanWindow.windowFrame.setLocation(new Point(logWidth,
+				ScanWindow.windowFrame.getY()));
+
 		// Set the default as not displaying
 		ScanWindow.isDisplaying = false;
 
@@ -146,10 +163,14 @@ public abstract class ScanWindow {
 				ScanWindow.isDisplaying = true;
 				Log.write("Scan window is being displayed", Log.DEBUG);
 			} else {
-				Log.write("There was a call to show the scan window, but it is already showing!", Log.ERROR);
+				Log.write(
+						"There was a call to show the scan window, but it is already showing!",
+						Log.ERROR);
 			}
 		} else {
-			Log.write("Cannot display the scan window if it has not yet been initialized", Log.ERROR);
+			Log.write(
+					"Cannot display the scan window if it has not yet been initialized",
+					Log.ERROR);
 		}
 
 	}
@@ -164,10 +185,14 @@ public abstract class ScanWindow {
 				ScanWindow.isDisplaying = false;
 				Log.write("Scan window is no longer being displayed", Log.DEBUG);
 			} else {
-				Log.write("There was a call to hide the scan window, but it is already hidden!", Log.ERROR);
+				Log.write(
+						"There was a call to hide the scan window, but it is already hidden!",
+						Log.ERROR);
 			}
 		} else {
-			Log.write("Cannot hide the scan window if it has not yet been initialized", Log.ERROR);
+			Log.write(
+					"Cannot hide the scan window if it has not yet been initialized",
+					Log.ERROR);
 		}
 	}
 
@@ -181,7 +206,9 @@ public abstract class ScanWindow {
 		if (ScanWindow.hasBeenInitialized) {
 			return Config.locationSet;
 		} else {
-			Log.write("Cannot query the scan window if it has not yet been initialized", Log.ERROR);
+			Log.write(
+					"Cannot query the scan window if it has not yet been initialized",
+					Log.ERROR);
 			return false;
 		}
 	}
@@ -199,7 +226,9 @@ public abstract class ScanWindow {
 				ScanWindow.show();
 			}
 		} else {
-			Log.write("Cannot refresh the scan window if it has not yet been initialized", Log.ERROR);
+			Log.write(
+					"Cannot refresh the scan window if it has not yet been initialized",
+					Log.ERROR);
 		}
 	}
 
@@ -208,12 +237,14 @@ public abstract class ScanWindow {
 	 */
 	private static void update() {
 		Log.write("Updating scan window elements", Log.DEBUG);
-		ScanWindow.SCAN_WINDOW__CURRENT_DIRECTORY_DYNAMIC_LABEL.setText(Config.location.getName());
+		ScanWindow.SCAN_WINDOW__CURRENT_DIRECTORY_DYNAMIC_LABEL
+				.setText(Config.location.getName());
 		JButtonManager.SCAN_WINDOW__SCAN_BUTTON.setVisible(Config.locationSet);
 	}
 
 	/**
-	 * Tell the world if this window is open. I wonder if this method is even necessary.
+	 * Tell the world if this window is open. I wonder if this method is even
+	 * necessary.
 	 * 
 	 * @return whether or not this window is open
 	 */

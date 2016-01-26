@@ -43,7 +43,7 @@ public abstract class Config {
 	 * Sets the separatorChars and ignoredChars lists with a preset. Default
 	 * separators: "-", ".", " ", "_" Default ignored: "(", ")"
 	 */
-	public static void setDefaultLists() {
+	public static void setDefaultLists(String fileArg) {
 		final String[] DEFAULT_SEPARATORS = { "-", ".", " ", "_" };
 		final String[] DEFAULT_IGNORED = { "(", ")" };
 
@@ -53,6 +53,10 @@ public abstract class Config {
 
 		for (String s : DEFAULT_IGNORED) {
 			ignoredChars.add(s);
+		}
+
+		if(fileArg != null) {
+			setLocation(new File(fileArg));
 		}
 	}
 }
