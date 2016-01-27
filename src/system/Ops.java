@@ -67,6 +67,11 @@ public abstract class Ops {
 		return caseNum;
 	}
 
+	/**
+	 * Checks a string to see if it's a number
+	 * @param s a one character string
+	 * @return whether or not it's a number
+	 */
 	private static boolean isNumber(String s) {
 		if (s.length() != 1)
 			return false;

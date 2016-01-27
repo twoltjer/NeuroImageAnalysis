@@ -6,14 +6,11 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Point;
-import java.io.File;
-
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 
 import logging.Log;
-import logging.LogWindowManager;
 import system.Config;
 import threads.ImageProcessingThreadA;
 
@@ -22,6 +19,18 @@ import threads.ImageProcessingThreadA;
  * two visualizing the program's progress and will have a cancel button to stop
  * processing. I'm considering having a disk space progress bar as well, because
  * this thing is going to be handling a LOT of data one day.
+ * 
+ * TODO: Make a cancel button on the progress bar window. It's counter intuitive
+ * to close the scan window to cancel the image processing.
+ * 
+ * TODO: Also, if the scan is canceled, remove the incomplete files.
+ * 
+ * TODO: Make a new window pop up in the place of the scan one when the scan
+ * completes, announcing that it has completed, giving the option to choose
+ * where to save the metadata, and the option to delete the temporary files
+ * created by the program.
+ * 
+ * TODO: Close this window (the progress bar window) when the scan completes.
  * 
  * @author twtduck
  * 
@@ -68,11 +77,10 @@ public abstract class ProgressWindow {
 		// Instantiate window elements
 		ProgressWindow.windowFrame = new JFrame(Config.PROGRAM_NAME__TITLE_BAR);
 		ProgressWindow.progressTitleLabel = new JLabel("Progress");
-		ProgressWindow.percentLabel = new JLabel("Scanning images in set: "
-				+ (ProgressWindow.setPercentage / 2) + "% complete");
-		ProgressWindow.setNumberLabel = new JLabel("Scanning set "
-				+ ProgressWindow.setNumber + " of "
-				+ ProgressWindow.numberOfSets);
+		ProgressWindow.percentLabel = new JLabel(
+				"Scanning images in set: " + (ProgressWindow.setPercentage / 2) + "% complete");
+		ProgressWindow.setNumberLabel = new JLabel(
+				"Scanning set " + ProgressWindow.setNumber + " of " + ProgressWindow.numberOfSets);
 		ProgressWindow.diskSpaceLabel = new JLabel("Disk space used:");
 
 		currentSetProgress = new JProgressBar();
@@ -80,11 +88,11 @@ public abstract class ProgressWindow {
 		diskFillProgress = new JProgressBar();
 
 		// resize bars
-		Dimension minProgBarSize = new Dimension(400,50);
+		Dimension minProgBarSize = new Dimension(400, 50);
 		currentSetProgress.setMinimumSize(minProgBarSize);
 		totalProgress.setMinimumSize(minProgBarSize);
 		diskFillProgress.setMinimumSize(minProgBarSize);
-		Dimension minLabelSize = new Dimension(590,50);
+		Dimension minLabelSize = new Dimension(590, 50);
 		percentLabel.setMinimumSize(minLabelSize);
 		setNumberLabel.setMinimumSize(minLabelSize);
 		diskSpaceLabel.setMinimumSize(minLabelSize);
@@ -99,8 +107,7 @@ public abstract class ProgressWindow {
 		int INSET_LEFT = 10;
 		int INSET_BOTTOM = 15;
 		int INSET_RIGHT = 10;
-		windowConstraints.insets = new Insets(INSET_TOP, INSET_LEFT,
-				INSET_BOTTOM, INSET_RIGHT);
+		windowConstraints.insets = new Insets(INSET_TOP, INSET_LEFT, INSET_BOTTOM, INSET_RIGHT);
 		windowConstraints.weightx = 1;
 		windowConstraints.weighty = 1;
 
@@ -146,7 +153,7 @@ public abstract class ProgressWindow {
 
 	public static void show() {
 		windowFrame.pack();
-		windowFrame.setLocation(new Point(500,224));
+		windowFrame.setLocation(new Point(500, 224));
 		windowFrame.setSize(new Dimension(500, 200));
 		windowFrame.setVisible(true);
 	}
@@ -172,20 +179,16 @@ public abstract class ProgressWindow {
 
 			// diskFillProgress shows how much of the disk is used
 			diskFillProgress.setMinimum(0);
+			diskFillProgress.setMaximum((int) (Config.location.getTotalSpace() / 100000));
 			diskFillProgress
-					.setMaximum((int) (Config.location.getTotalSpace() / 100000));
-			diskFillProgress
-					.setValue((int) ((Config.location.getTotalSpace() - Config.location
-							.getFreeSpace()) / 100000));
+					.setValue((int) ((Config.location.getTotalSpace() - Config.location.getFreeSpace()) / 100000));
 
 			// Refresh labels
 			int progress = (ProgressWindow.setPercentage / 3);
-			if(progress > 100)
+			if (progress > 100)
 				progress = 100;
-			percentLabel.setText("Scanning images in set: "
-					+ progress + "% complete");
-			setNumberLabel.setText("Scanning set " + ProgressWindow.setNumber
-					+ " of " + ProgressWindow.numberOfSets);
+			percentLabel.setText("Scanning images in set: " + progress + "% complete");
+			setNumberLabel.setText("Scanning set " + ProgressWindow.setNumber + " of " + ProgressWindow.numberOfSets);
 		}
 	}
 }

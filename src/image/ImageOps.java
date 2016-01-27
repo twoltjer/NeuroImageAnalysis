@@ -40,6 +40,11 @@ public abstract class ImageOps {
 		img.setRGB(x, y, Color.black.getRGB());
 	}
 
+	/**
+	 * Returns the value of the image, with white being positive. 
+	 * @param img the image
+	 * @return the value of the image
+	 */
 	public static double getImageValue(BufferedImage img) {
 		int numberOfWhitePixels = 0;
 
@@ -57,6 +62,11 @@ public abstract class ImageOps {
 		return avgValue;
 	}
 
+	/**
+	 * Returns the value of the image, with black being positive
+	 * @param img the image
+	 * @return the value of the image
+	 */
 	public static double getInvertedImageValue(BufferedImage img) {
 		double val = (1.0d - ImageOps.getImageValue(img));
 		return val;

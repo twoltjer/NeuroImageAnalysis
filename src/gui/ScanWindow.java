@@ -14,7 +14,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 import logging.Log;
-import logging.LogWindowManager;
 import system.Config;
 import system.Ops;
 

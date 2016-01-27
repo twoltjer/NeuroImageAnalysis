@@ -139,7 +139,6 @@ public class ImageSet {
 		}
 		int percentageInterval = totalExpected / 100;
 		int nextPercentageInterval = 1;
-		int percentDone = 0;
 		int totalPixels = 0;
 
 		/*
@@ -172,7 +171,6 @@ public class ImageSet {
 						ImageOps.setPixelToBlack(newImage, x, y);
 					totalPixels++;
 					if (totalPixels == nextPercentageInterval) {
-						percentDone += 1;
 						ProgressWindow.setPercentage += 2;
 						ProgressWindow.updateBars();
 						nextPercentageInterval += percentageInterval;
