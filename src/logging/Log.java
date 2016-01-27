@@ -96,7 +96,7 @@ public abstract class Log {
 		if (level == Log.ERROR)
 			Ops.exit();
 		
-		LogWindowManager.getScroolpane().getVerticalScrollBar().setValue(LogWindowManager.getScroolpane().getVerticalScrollBar().getMaximum());;
+		LogWindowManager.getScrollpane().getVerticalScrollBar().setValue(LogWindowManager.getScrollpane().getVerticalScrollBar().getMaximum());;
 	}
 
 	private static String genLevelStamp(int level, String writeMsg) {

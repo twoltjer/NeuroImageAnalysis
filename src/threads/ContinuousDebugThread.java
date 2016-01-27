@@ -35,17 +35,17 @@ public class ContinuousDebugThread implements Runnable {
 				// Most recently, this was used to debug the scroll bar for the
 				// log window.
 				System.out.println("Scroll bar value: "
-						+ LogWindowManager.getScroolpane()
+						+ LogWindowManager.getScrollpane()
 								.getVerticalScrollBar().getValue());
 				System.out.println("Scroll bar max value: "
-						+ LogWindowManager.getScroolpane()
+						+ LogWindowManager.getScrollpane()
 								.getVerticalScrollBar().getMaximum());
 				System.out.println("Moving scroll bar to max value");
 				LogWindowManager
-						.getScroolpane()
+						.getScrollpane()
 						.getVerticalScrollBar()
 						.setValue(
-								LogWindowManager.getScroolpane()
+								LogWindowManager.getScrollpane()
 										.getVerticalScrollBar().getMaximum());
 				;
 				// Let the thread sleep for a while. In milliseconds

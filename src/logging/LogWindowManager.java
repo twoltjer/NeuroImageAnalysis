@@ -103,13 +103,10 @@ public abstract class LogWindowManager {
 	}
 
 	/**
-	 * I hate the scrool pane and everything about it. I can't ever manage to
-	 * make it automatically scroll to the most recent output. Seriously?
-	 * 
-	 * @return the scrool pane
+	 * Gives the Log class the ability to set the scroll bar
+	 * @return the scroll pane
 	 */
-	public static JScrollPane getScroolpane() {
-		return consoleOutputBoxScrollPane;
+	public static JScrollPane getScrollpane() {
+		return LogWindowManager.consoleOutputBoxScrollPane;
 	}
-
 }
