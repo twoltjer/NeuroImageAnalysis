@@ -51,6 +51,15 @@ public class ImageSet {
 	public void addImageToSet(File f) {
 		Log.write("Adding image to set: " + f.getName(), Log.CONSOLE);
 		this.files.add(f);
+		Log.write("Added image to set: " + f.getName(), Log.CONSOLE);
+	}
+
+	/**
+	 * Calculates the average color from the images, then the thresholds
+	 */
+	public void calculateImageData() {
+		// Convert images
+		for(File f : this.files) {
 		BufferedImage img = null;
 		try {
 			img = ImageIO.read(f);
@@ -59,13 +68,7 @@ public class ImageSet {
 			Log.write("There was an error reading the image file", Log.ERROR);
 		}
 		this.images.add(img);
-		Log.write("Added image to set: " + f.getName(), Log.CONSOLE);
-	}
-
-	/**
-	 * Calculates the average color from the images, then the thresholds
-	 */
-	public void calculateImageData() {
+		}		
 
 		// displayImages();
 		int totalExpected = 0;
