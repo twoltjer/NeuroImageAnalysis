@@ -44,20 +44,24 @@ public class ImageProcessingThreadA implements Runnable {
 		logWrite("Running " + this.name);
 		File scanDir = Config.location;
 
-		// Just for testing purposes, create one set from the entire directory.
-		// TODO: Change this later using the code at the bottom of the method
+		// get an array of File objects and create an arraylist for just the image files
 		File[] dirFiles = scanDir.listFiles();
 		ArrayList<File> imageFiles = new ArrayList<File>();
-		// group by file names
-		ArrayList<ImageSet> groupedFiles = new ArrayList<ImageSet>();
+		
+		// Discover which files are either png or jpg image files and add them to imageFiles
+		// I'll have to rewrite this if any of the files I scan have "png" or "jpg" as part 
+		// of their titles, but for now it shouldn't be a problem
+		//TODO: Have the code check if these are the actual extensions.
 		for (File f : dirFiles) {
 			if ((f.getName().toLowerCase().indexOf("png") >= 0)
 					|| (f.getName().toLowerCase().indexOf("jpg") >= 0)) {
-				if (f.exists())
-					imageFiles.add(f);
+				imageFiles.add(f);
 			}
 		}
-
+		
+		// Create an ArrayList of image sets, and add the image files to those sets, but 
+		// don't convert them to BufferedImage objects until the sets themselves are processing.
+		ArrayList<ImageSet> groupedFiles = new ArrayList<ImageSet>();
 		for (File image : imageFiles) {
 			int caseNumber = Ops.getCaseNumberFromFilename(image.getName());
 			boolean foundMatchingCase = false;
@@ -76,6 +80,8 @@ public class ImageProcessingThreadA implements Runnable {
 			}
 		}
 		
+		// Now that the images have been grouped by case number into ImageSet objects, they
+		// can be scanned for MetaData. 
 		MetaDataWriter.init();
 		ImageProcessingThreadA.totalSets = groupedFiles.size();
 		ProgThread prog = new ProgThread("Progress window thread");
@@ -92,6 +98,7 @@ public class ImageProcessingThreadA implements Runnable {
 			set.writeMonochromeImages(scanDir);
 		}
 
+		// We're done processing!
 		MetaDataWriter.close();
 		ProgressWindow.hide();
 		logWrite("Thread " + this.name + " exiting.");
