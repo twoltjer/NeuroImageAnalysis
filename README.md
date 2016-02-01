@@ -3,18 +3,20 @@ Java program for analyzing how positive a stain is on sets of images from brain 
 
 ## How to use this program
 
+NOTE: The commands in this section are for bash shells or similar. If using Windows, you might need to find a different way to compile and run the program. 
+
 To run this program, the following commands must be run from the repository's parent directory:
 ```
-./compile
+mkdir bin
+javac src/Main.java src/*/*.java -d bin
 cd bin
 java Main
 ```
-To clean up, I've written a script to remove all files from the bin directory. It can be easily run with:
+To clean up, simply remove the bin folder:
 ```
-./clean
+rm -rv bin
 ```
-Note that this script may remove other files if it's not run from the repository's parent directory.
+Make sure that you're actually in the project's directory when deleting the bin folder, as other "bin" folders might be very important not to delete.
 
-## Files in the parent directory
-
-There are a few files in the parent directory from when I imported the project into Eclipse when refactoring it. Just ignore them, or use them to import the project yourself (if you want). I'm not familiar enough with git to be messing around with the git-ignore configuration so I'm just going to leave them how they are. 
+## Documentation
+The documentation for this project is a little out of date, but can be found in the "doc" folder. I'll be updating it soon. :)
