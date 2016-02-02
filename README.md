@@ -8,10 +8,12 @@ NOTE: The commands in this section are for bash shells or similar. If using Wind
 To run this program, the following commands must be run from the repository's parent directory:
 ```
 mkdir bin
-javac src/Main.java src/*/*.java -d bin
+javac src/Main.java src/*/*.java -d bin -cp lib/jai_imageio.jar
 cd bin
-java Main
+java -cp ../lib/jai_imageio.jar:. Main [path/to/folder]
 ```
+As you can see, the execution command ("java -cp ...") has an optional command-line argument that lets it target a folder before even starting the program. This allows the user to bypass the folder selection if desired.
+
 To clean up, simply remove the bin folder:
 ```
 rm -rv bin
@@ -19,4 +21,4 @@ rm -rv bin
 Make sure that you're actually in the project's directory when deleting the bin folder, as other "bin" folders might be very important not to delete.
 
 ## Documentation
-The documentation for this project is a little out of date, but can be found in the "doc" folder. I'll be updating it soon. :)
+The documentation of this project should be relatively up to date. Some minor changes may have occurred since it was generated, but nothing major has changed.
