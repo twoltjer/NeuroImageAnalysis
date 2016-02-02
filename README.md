@@ -22,3 +22,6 @@ Make sure that you're actually in the project's directory when deleting the bin 
 
 ## Documentation
 The documentation of this project should be relatively up to date. Some minor changes may have occurred since it was generated, but nothing major has changed.
+
+## Licensing
+Packaged along with the project (in the "lib" directory) is a jar archive with binary code from Sun Microsystems, Inc. The licences for the packaged archive are in the directory title "LICENSES." If there is trouble with this usage of the binary code, I ask that you contact me and I'll remove it from the project as soon as possible. I believe that, with this arrangement, my program is easier for users to use, and that Sun gets the credit they deserve for their contribution to the project.
