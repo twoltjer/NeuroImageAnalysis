@@ -164,7 +164,6 @@ public abstract class ProgressWindow {
 
 	public static void updateBars() {
 		if (ProgressWindow.isInitialized) {
-			System.out.println(windowFrame.getSize().getWidth());
 			// currentSetProgress is reperesented through a percentage, but
 			// there are two operations so the max is 300 (100 for first op, 200
 			// for second because it takes longer)

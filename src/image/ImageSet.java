@@ -29,17 +29,17 @@ public class ImageSet {
 	private double thresholdG;
 	private double thresholdB;
 
-	public int caseNumber;
+	public String caseName;
 
 	/**
 	 * Create a new image set, using the case number. (TODO: Add stain support)
 	 * @param caseNumber the case number
 	 */
-	public ImageSet(int caseNumber) {
+	public ImageSet(String caseName) {
 		this.files = new ArrayList<File>();
 		this.images = new ArrayList<BufferedImage>();
 		this.monoimages = new ArrayList<BufferedImage>();
-		this.caseNumber = caseNumber;
+		this.caseName = caseName;
 	}
 
 	/**
@@ -108,7 +108,6 @@ public class ImageSet {
 				}
 			}
 		}
-		System.out.println("Done reading image");
 		Log.write("Total red is " + totalR, Log.DEBUG);
 		Log.write("Total green is " + totalG, Log.DEBUG);
 		Log.write("Total blue is " + totalB, Log.DEBUG);
@@ -187,7 +186,8 @@ public class ImageSet {
 					+ "-" + originalImageFile.getName();
 			File newFile = new File(directory, newImageName);
 			try {
-				ImageIO.write(newImage, "PNG", newFile);
+				if(Log.ENABLE_DEBUG_LOG)
+					ImageIO.write(newImage, "PNG", newFile);
 				monoimages.add(newImage);
 			} catch (IOException e) {
 				Log.write("There was a problem writing the new image file",
@@ -196,7 +196,7 @@ public class ImageSet {
 		}
 		
 		// Write metadata
-		MetaDataWriter.writeData(this.monoimages, this.caseNumber);
+		MetaDataWriter.writeData(this.monoimages, this.caseName);
 		
 		this.images.clear();
 		this.monoimages.clear();

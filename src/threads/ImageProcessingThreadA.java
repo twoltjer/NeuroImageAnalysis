@@ -45,7 +45,7 @@ public class ImageProcessingThreadA implements Runnable {
 		File scanDir = Config.location;
 
 		// get an array of File objects and create an arraylist for just the image files
-		File[] dirFiles = scanDir.listFiles();
+		File[] dirFiles = Ops.listFilesRecursively(scanDir);
 		ArrayList<File> imageFiles = new ArrayList<File>();
 		
 		// Discover which files are either png or jpg image files and add them to imageFiles
@@ -63,10 +63,10 @@ public class ImageProcessingThreadA implements Runnable {
 		// don't convert them to BufferedImage objects until the sets themselves are processing.
 		ArrayList<ImageSet> groupedFiles = new ArrayList<ImageSet>();
 		for (File image : imageFiles) {
-			int caseNumber = Ops.getCaseNumberFromFilename(image.getName());
+			String caseName = Ops.getCaseNameFromFilename(image.getName());
 			boolean foundMatchingCase = false;
 			for (ImageSet i : groupedFiles) {
-				if (i.caseNumber == caseNumber) {
+				if (i.caseName.equals(caseName)) {
 					foundMatchingCase = true;
 					i.addImageToSet(image);
 				}
@@ -74,7 +74,7 @@ public class ImageProcessingThreadA implements Runnable {
 			if (!foundMatchingCase) {
 				Log.write("Creating new set for image " + image.getName(),
 						Log.STANDARD);
-				ImageSet newSet = new ImageSet(caseNumber);
+				ImageSet newSet = new ImageSet(caseName);
 				newSet.addImageToSet(image);
 				groupedFiles.add(newSet);
 			}
@@ -92,7 +92,7 @@ public class ImageProcessingThreadA implements Runnable {
 			ProgressWindow.updateBars();
 			ImageSet set = groupedFiles.get(i - 1);
 			Log.write("Processing case " + i + " of " + groupedFiles.size()
-					+ ": case number " + set.caseNumber, Log.STANDARD);
+					+ ": case " + set.caseName, Log.STANDARD);
 			set.calculateImageData();
 			Log.write("Writing new image data", Log.STANDARD);
 			set.writeMonochromeImages(scanDir);

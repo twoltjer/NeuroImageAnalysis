@@ -38,7 +38,7 @@ public abstract class MetaDataWriter {
 		metaDataWriter.println("\"Case number\",\"Image value average\",\"Standard deviation\"");
 	}
 
-	public static void writeData(ArrayList<BufferedImage> monoImages, int caseNumber) {
+	public static void writeData(ArrayList<BufferedImage> monoImages, String caseName) {
 		double[] imageValues = new double[monoImages.size()];
 		for(int i = 0; i < monoImages.size(); i++) {
 			double imageValue = ImageOps.getInvertedImageValue(monoImages.get(i));
@@ -47,7 +47,7 @@ public abstract class MetaDataWriter {
 		
 		double imageAverageValue = Ops.doubleArraySum(imageValues) / imageValues.length;
 		double percentDeviation = Ops.doubleArrayStandardDeviation(imageValues, imageAverageValue);
-		metaDataWriter.println(caseNumber + "," + imageAverageValue + "," + percentDeviation);
+		metaDataWriter.println(caseName + "," + imageAverageValue + "," + percentDeviation);
 	}
 	
 	/**
@@ -57,6 +57,7 @@ public abstract class MetaDataWriter {
 	public static void close() {
 		Log.write("Closing metadata writer", Log.STANDARD);
 		MetaDataWriter.metaDataWriter.close();
+		Ops.exit();
 	}
 	
 	

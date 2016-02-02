@@ -18,7 +18,7 @@ import system.Ops;
 public abstract class Log {
 	// Logging configuration
 	final static String DEFAULT_LOG_PATH = "startlog.txt";
-	final static boolean ENABLE_DEBUG_LOG = true;
+	public final static boolean ENABLE_DEBUG_LOG = false;
 
 	// Declare logging levels
 	public final static int ERROR = -1;
@@ -81,7 +81,6 @@ public abstract class Log {
 		String filePrint = "";
 
 		// Java really likes to generate warnings
-		@SuppressWarnings("unused")
 		boolean writeThisMessageToWindow = (Log.ENABLE_DEBUG_LOG || level != Log.DEBUG);
 
 		if (LogWindowManager.isInstantiated && writeThisMessageToWindow) {

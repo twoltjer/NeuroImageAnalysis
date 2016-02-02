@@ -1,5 +1,6 @@
 package system;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import threads.GUIThread;
@@ -42,37 +43,35 @@ public abstract class Ops {
 	}
 
 	/**
-	 * Gets the case number from a file name. This is way too complex 'cause I
-	 * really don't want to read into the interactions between strings and
-	 * integers.
+	 * Gets the case name from a file name. 
 	 * 
 	 * @param name
 	 *            the name of the file
-	 * @return the case number
+	 * @return the case name
 	 */
-	public static int getCaseNumberFromFilename(String name) {
-		String preSuffix = name.substring(0, name.indexOf("-"));
-		String numberBuilder = "";
-		// Remove all characters except numbers
-		for (int i = 0; i < preSuffix.length(); i++) {
-			if (isNumber(preSuffix.substring(i, i + 1)))
-				numberBuilder += preSuffix.substring(i, i + 1);
+	public static String getCaseNameFromFilename(String name) {
+		String caseName = "";
+		boolean isA = (name.indexOf("(A)") > 0);
+		
+		String caseNumberAndStain = name.substring(0,name.lastIndexOf("-"));
+		
+		caseName += caseNumberAndStain;
+		
+		if(isA) {
+			caseName += "-A";
 		}
-		int caseNum;
-		try {
-			caseNum = Integer.parseInt(numberBuilder);
-		} catch (Exception e) {
-			return 0;
-		}
-		return caseNum;
+		
+		return caseName;
 	}
 
 	/**
 	 * Checks a string to see if it's a number
-	 * @param s a one character string
+	 * 
+	 * @param s
+	 *            a one character string
 	 * @return whether or not it's a number
 	 */
-	private static boolean isNumber(String s) {
+	public static boolean isNumber(String s) {
 		if (s.length() != 1)
 			return false;
 		ArrayList<String> numberStrings = new ArrayList<String>();
@@ -111,12 +110,39 @@ public abstract class Ops {
 	 *            the average of that set
 	 * @return the average percent deviation
 	 */
-	public static double doubleArrayStandardDeviation(double[] arr,
-			double avg) {
+	public static double doubleArrayStandardDeviation(double[] arr, double avg) {
 		double variance = 0;
-		for(double d : arr) {
+		for (double d : arr) {
 			variance += (Math.pow((d - avg), 2) / ((double) arr.length));
 		}
 		return Math.sqrt(variance);
+	}
+
+	/**
+	 * Lists all files in a directory, and its sub-directories, and
+	 * sub-sub-directories....
+	 * 
+	 * @param parent
+	 *            the parent directory to list
+	 * @return all non-directory files from that directory and its children
+	 */
+	public static File[] listFilesRecursively(File parent) {
+		ArrayList<File> nonDirs = new ArrayList<File>();
+		File[] temp = parent.listFiles();
+		for(File f : temp) {
+			if(f.isDirectory()) {
+				File[] thdir = Ops.listFilesRecursively(f);
+				for(File g : thdir) {
+					nonDirs.add(g);
+				}
+			} else {
+				nonDirs.add(f);
+			}
+		}
+		File[] rtn = new File[nonDirs.size()];
+		for(int i = 0; i < rtn.length; i++) {
+			rtn[i] = nonDirs.get(i);
+		}
+		return rtn;
 	}
 }
