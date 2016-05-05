@@ -8,7 +8,7 @@ Note: this will continue to be the purpose of the program for at least the 2.0 s
 
 For the older 1.* releases of this program, see the older readme files. The below describes the alpha builds of version 2.0.
 
-One of the many core changes in the program set to release in version 2.0 is the use of an Apache ANT build file. An experimental version of this file is included in the project, and should work relatively well. To run the binaries built by ANT, either execute the JAR file in the "dists" directory. 
+One of the many core changes in the program set to release in version 2.0 is the use of an Apache ANT build file. An experimental version of this file is included in the project, and should work relatively well. To run the binaries built by ANT, execute the JAR file in the "dists" directory, which should be automatically created when building. 
 
 Alternatively, in case you don't have ant and don't want to install it, or you want to compile traditionally, compile the files in the "src" directory, including the JAR files in the lib directory in the classpath, and run it--again, with the adjusted classpath--pointing at com.nia.control.Main as the run class. 
 
