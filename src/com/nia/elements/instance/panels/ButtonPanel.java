@@ -51,7 +51,7 @@ public class ButtonPanel extends JPanel {
 				} else if(e.getSource().equals(nextButton)) {
 					MainWindow.leftPanel.showNextPanel();
 				} else if(e.getSource().equals(importExportButton)) {
-					MainWindow.leftPanel.showNoPanel();
+					MainWindow.leftPanel.showExportPanel();
 				}
 			}
 			

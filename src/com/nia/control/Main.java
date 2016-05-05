@@ -1,3 +1,5 @@
+// Start com/nia/control/Main.java
+
 package com.nia.control;
 
 import com.nia.elements.global.Log;
@@ -61,3 +63,5 @@ public class Main {
 	}
 
 }
+
+// End com/nia/control/Main.java

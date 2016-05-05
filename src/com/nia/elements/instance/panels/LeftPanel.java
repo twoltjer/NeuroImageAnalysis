@@ -1,3 +1,5 @@
+// Start com/nia/elements/instance/panels/LeftPanel.java
+
 package com.nia.elements.instance.panels;
 
 import java.awt.Color;
@@ -19,7 +21,8 @@ public class LeftPanel extends JPanel {
 	private int selectedPanelIndex;
 	private ArrayList<JPanel> panels;
 
-	public class FolderChooserPanelLeft extends JPanel implements RightPanelDisplayable {
+	public class FolderChooserPanelLeft extends JPanel implements
+			RightPanelDisplayable {
 		private static final long serialVersionUID = 1372667393069927345L;
 
 		public FolderChooserPanelLeft() {
@@ -30,25 +33,26 @@ public class LeftPanel extends JPanel {
 			c.weightx = 1;
 			c.weighty = 1;
 
-			// Create JLabel for text 
+			// Create JLabel for text
 			JLabel label = new JLabel("Image Directory");
 			label.setAlignmentY(JLabel.CENTER_ALIGNMENT);
 			label.setAlignmentX(JLabel.CENTER_ALIGNMENT);
 			label.setBackground(Color.CYAN);
 			label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 18));
-			c.insets = new Insets(0, this.getWidth() / 2, 0, this.getWidth() / 2);
+			c.insets = new Insets(0, this.getWidth() / 2, 0,
+					this.getWidth() / 2);
 			this.add(new JPanel(), c);
 			this.add(label, c);
-			
+
 		}
 
-		@Override
 		public void display() {
 			this.setBorder(null);
 		}
 	}
 
-	public class OptionsPanelLeft extends JPanel implements RightPanelDisplayable {
+	public class OptionsPanelLeft extends JPanel implements
+			RightPanelDisplayable {
 		private static final long serialVersionUID = 1372667393069927345L;
 
 		public OptionsPanelLeft() {
@@ -56,17 +60,18 @@ public class LeftPanel extends JPanel {
 			this.setLayout(new GridBagLayout());
 			GridBagConstraints c = new GridBagConstraints();
 			c.fill = GridBagConstraints.BOTH;
-			
+
 			c.weightx = 1;
 			c.weighty = 1;
-			
-			// Create JLabel for text 
+
+			// Create JLabel for text
 			JLabel label = new JLabel("Options");
 			label.setAlignmentY(JLabel.CENTER_ALIGNMENT);
 			label.setAlignmentX(JLabel.CENTER_ALIGNMENT);
 			label.setBackground(Color.CYAN);
 			label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 18));
-			c.insets = new Insets(0, this.getWidth() / 2, 0, this.getWidth() / 2);
+			c.insets = new Insets(0, this.getWidth() / 2, 0,
+					this.getWidth() / 2);
 			this.add(new JPanel(), c);
 			this.add(label, c);
 		}
@@ -77,7 +82,8 @@ public class LeftPanel extends JPanel {
 		}
 	}
 
-	public class ColorsPanelLeft extends JPanel implements RightPanelDisplayable {
+	public class ColorsPanelLeft extends JPanel implements
+			RightPanelDisplayable {
 		private static final long serialVersionUID = 1372667393069927345L;
 
 		public ColorsPanelLeft() {
@@ -88,13 +94,14 @@ public class LeftPanel extends JPanel {
 			c.weightx = 1;
 			c.weighty = 1;
 
-			// Create JLabel for text 
+			// Create JLabel for text
 			JLabel label = new JLabel("Colors");
 			label.setAlignmentY(JLabel.CENTER_ALIGNMENT);
 			label.setAlignmentX(JLabel.CENTER_ALIGNMENT);
 			label.setBackground(Color.CYAN);
 			label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 18));
-			c.insets = new Insets(0, this.getWidth() / 2, 0, this.getWidth() / 2);
+			c.insets = new Insets(0, this.getWidth() / 2, 0,
+					this.getWidth() / 2);
 			this.add(new JPanel(), c);
 			this.add(label, c);
 		}
@@ -116,13 +123,14 @@ public class LeftPanel extends JPanel {
 			c.weightx = 1;
 			c.weighty = 1;
 
-			// Create JLabel for text 
+			// Create JLabel for text
 			JLabel label = new JLabel("Scan");
 			label.setAlignmentY(JLabel.CENTER_ALIGNMENT);
 			label.setAlignmentX(JLabel.CENTER_ALIGNMENT);
 			label.setBackground(Color.CYAN);
 			label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 18));
-			c.insets = new Insets(0, this.getWidth() / 2, 0, this.getWidth() / 2);
+			c.insets = new Insets(0, this.getWidth() / 2, 0,
+					this.getWidth() / 2);
 			this.add(new JPanel(), c);
 			this.add(label, c);
 		}
@@ -146,12 +154,11 @@ public class LeftPanel extends JPanel {
 		c.fill = GridBagConstraints.BOTH;
 		c.weightx = 1;
 		c.weighty = 1;
-		for(int i = 0; i < panels.size(); i++) {
+		for (int i = 0; i < panels.size(); i++) {
 			c.gridy = i;
 			this.add(panels.get(i), c);
 		}
 		setSelectedPanel(0);
-		
 
 	}
 
@@ -162,8 +169,8 @@ public class LeftPanel extends JPanel {
 	public void showPreviousPanel() {
 		this.setSelectedPanel(selectedPanelIndex - 1);
 	}
-	
-	public void showNoPanel() {
+
+	public void showExportPanel() {
 		this.setSelectedPanel(-1);
 	}
 
@@ -172,45 +179,52 @@ public class LeftPanel extends JPanel {
 		for (JPanel panel : panels) {
 			panel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
 		}
-		if(index != -1) {
+		if (index != -1) {
 			// Display the new right panel and remove the left panel's border
 			JPanel jp = this.panels.get(index);
-			if(index == 0) {
+			if (index == 0) {
 				((FolderChooserPanelLeft) jp).display();
-			} else if(index == 1) {
+			} else if (index == 1) {
 				((OptionsPanelLeft) jp).display();
-			} else if(index == 2) {
+			} else if (index == 2) {
 				((ColorsPanelLeft) jp).display();
-			} else if(index == 3) {
+			} else if (index == 3) {
 				((ScanPanelLeft) jp).display();
 			}
-			
+
 			// check the panels next to it
-			if(index > 0) {
-				panels.get(index - 1).setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
+			if (index > 0) {
+				panels.get(index - 1).setBorder(
+						BorderFactory.createLineBorder(Color.BLACK, 3));
 				MainWindow.buttonPanel.previousButton.setEnabled(true);
 			} else {
 				MainWindow.buttonPanel.previousButton.setEnabled(false);
 			}
-			
-			if(index < panels.size() - 1) {
-				panels.get(index + 1).setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
+
+			if (index < panels.size() - 1) {
+				panels.get(index + 1).setBorder(
+						BorderFactory.createLineBorder(Color.BLACK, 3));
 				MainWindow.buttonPanel.nextButton.setEnabled(true);
 
 			} else {
 				MainWindow.buttonPanel.nextButton.setEnabled(false);
 			}
 			this.selectedPanelIndex = index;
+
+			// If the import/export button isn't in use, make its text black
+			MainWindow.buttonPanel.importExportButton.setForeground(Color.BLACK);
+
 		} else {
 			MainWindow.buttonPanel.nextButton.setEnabled(false);
 			MainWindow.buttonPanel.previousButton.setEnabled(false);
 			MainWindow.buttonPanel.importExportButton.setForeground(Color.BLUE);
-			if(this.selectedPanelIndex == index) {
+			if (this.selectedPanelIndex == index) {
 				this.setSelectedPanel(index + 1);
 			} else {
 				this.selectedPanelIndex = index;
 			}
 		}
-		
 	}
 }
+
+// End com/nia/elements/instance/panels/LeftPanel.java
