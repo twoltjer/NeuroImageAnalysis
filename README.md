@@ -4,6 +4,11 @@ Java program for analyzing how positive a stain is on sets of images from brain 
 
 Note: this will continue to be the purpose of the program for at least the 2.0 series of releases. However, I do hope that one day this program may be more flexible. 
 
+## What to download
+
+The current Master branch is the most recent, which also means that the program that you download when cloning the Master branch is likely to be disfunctional. For a functional copy of the program, download from the [Releases tab](https://github.com/twtduck/NeuroImageAnalysis/releases).
+
+
 ## How to use this program
 
 For the older 1.* releases of this program, see the older readme files. The below describes the alpha builds of version 2.0.
