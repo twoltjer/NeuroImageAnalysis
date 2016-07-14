@@ -3,8 +3,6 @@ package com.nia.elements.instance;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
-import java.awt.Window;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
@@ -37,8 +35,9 @@ public abstract class MainWindow {
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());;
 		
 		buttonPanel = new ButtonPanel();
-		leftPanel = new LeftPanel();
 		rightPanel = new RightPanel();
+		leftPanel = new LeftPanel();
+
 		
 		frame.c.weightx = 0.37;
 		frame.c.weighty = 1;
@@ -55,13 +54,22 @@ public abstract class MainWindow {
 		frame.c.gridx = 2;
 		frame.c.weightx = 0.06;
 		frame.add(buttonPanel);
-
 	}
 
 	public static void display() {
 		frame.pack();
 		frame.setVisible(true);
-		gd.setFullScreenWindow(Window.getWindows()[1]); 
+		//gd.setFullScreenWindow(Window.getWindows()[1]); 
+	}
+	
+	public static void repack() {
+		
+		frame.pack();
+		
+	}
+	
+	public static boolean allSettingsAreSet() {
+		return true; //TODO: Make this actually check the settings
 	}
 }
 

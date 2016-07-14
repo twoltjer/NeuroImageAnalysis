@@ -3,6 +3,7 @@
 package com.nia.elements.instance.panels;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -37,7 +38,7 @@ public class LeftPanel extends JPanel {
 			JLabel label = new JLabel("Image Directory");
 			label.setAlignmentY(JLabel.CENTER_ALIGNMENT);
 			label.setAlignmentX(JLabel.CENTER_ALIGNMENT);
-			label.setBackground(Color.CYAN);
+			
 			label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 18));
 			c.insets = new Insets(0, this.getWidth() / 2, 0,
 					this.getWidth() / 2);
@@ -48,6 +49,7 @@ public class LeftPanel extends JPanel {
 
 		public void display() {
 			this.setBorder(null);
+			MainWindow.rightPanel.setPanelView(RightPanel.PANEL_VIEW_DIRECTORYCHOOSER);
 		}
 	}
 
@@ -159,7 +161,7 @@ public class LeftPanel extends JPanel {
 			this.add(panels.get(i), c);
 		}
 		setSelectedPanel(0);
-
+		this.setPreferredSize(new Dimension(200, 600));
 	}
 
 	public void showNextPanel() {
@@ -177,7 +179,7 @@ public class LeftPanel extends JPanel {
 	private void setSelectedPanel(int index) {
 		// Set borders
 		for (JPanel panel : panels) {
-			panel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3));
+			panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		}
 		if (index != -1) {
 			// Display the new right panel and remove the left panel's border
@@ -195,7 +197,7 @@ public class LeftPanel extends JPanel {
 			// check the panels next to it
 			if (index > 0) {
 				panels.get(index - 1).setBorder(
-						BorderFactory.createLineBorder(Color.BLACK, 3));
+						BorderFactory.createLineBorder(Color.BLACK));
 				MainWindow.buttonPanel.previousButton.setEnabled(true);
 			} else {
 				MainWindow.buttonPanel.previousButton.setEnabled(false);
@@ -203,7 +205,7 @@ public class LeftPanel extends JPanel {
 
 			if (index < panels.size() - 1) {
 				panels.get(index + 1).setBorder(
-						BorderFactory.createLineBorder(Color.BLACK, 3));
+						BorderFactory.createLineBorder(Color.BLACK));
 				MainWindow.buttonPanel.nextButton.setEnabled(true);
 
 			} else {
@@ -218,6 +220,7 @@ public class LeftPanel extends JPanel {
 			MainWindow.buttonPanel.nextButton.setEnabled(false);
 			MainWindow.buttonPanel.previousButton.setEnabled(false);
 			MainWindow.buttonPanel.importExportButton.setForeground(Color.BLUE);
+			MainWindow.rightPanel.setPanelView(RightPanel.PANEL_VIEW_IMPORTEXPORT);
 			if (this.selectedPanelIndex == index) {
 				this.setSelectedPanel(index + 1);
 			} else {
