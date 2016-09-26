@@ -1,15 +1,12 @@
 package gui;
 
+/**
+ * This class buffers new images if necessary after the displaying image changes. 
+ * Be sure to have set a new RuntimeConfig.displayingImage before running buffer(). Also, 
+ * running buffer() will change the the RuntimeConfig.bufferedImages list. 
+ * @author Thomas Woltjer
+ */
 public class BufferManager {
-	static public boolean BUFFER_COLOR = false;
-	static public boolean BUFFER_GRAYSCALE = false;
-	static public boolean BUFFER_MONOCHROME = false;
-	static public boolean BUFFER_LG_DEC = false;
-	static public boolean BUFFER_SM_DEC = false;
-	static public boolean BUFFER_SM_INC = false;
-	static public boolean BUFFER_LG_INC = true;
-	
-	
 	class BufferRunner implements Runnable {
 
 		@Override

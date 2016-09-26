@@ -78,16 +78,12 @@ public class RuntimeConfig {
 	 */
 	public static String outputFileDirButtonText = Config.CHOOSER_HUB_IMAGE_DIR_CHOOSER_BUTTON_TEXT;
 	/**
-	 * The current threshold. By default, it is set to <b>Config.THRESH_DEFAULT</b>
+	 * The image being displayed
 	 */
-	public static int threshold;
+	public static BufferedImageContainer displayingImage;
 	/**
-	 * The display mode number. The meaning behind this number is found in the
-	 * <b>GUIThread</b> class, which holds the <b>DM_COLOR</b>, <b>DM_GRAYSCALE</b>, and
-	 * <b>DM_MONOCHROME</b> constants
+	 * List of all images
 	 */
-	public static int displayModeNumber;
-	
 	public static ArrayList<BufferedImageContainer> images = new ArrayList<BufferedImageContainer>();
 	
 	public static ArrayList<BufferedImageContainer> bufferedImages = new ArrayList<BufferedImageContainer>();
@@ -154,7 +150,7 @@ public class RuntimeConfig {
 	 * @return the next DM number
 	 */
 	public static int getNextDMNumber() {
-		int nextDMNum = RuntimeConfig.displayModeNumber + 1;
+		int nextDMNum = RuntimeConfig.displayingImage.DM + 1;
 		if (!(nextDMNum - Config.PREVIEWER_DM_NAMES.length < 0)) {
 			nextDMNum -= Config.PREVIEWER_DM_NAMES.length;
 		}
@@ -166,7 +162,7 @@ public class RuntimeConfig {
 	 * @return the previous DM number
 	 */
 	public static int getPrevDMNumber() {
-		int prevDMNum = RuntimeConfig.displayModeNumber - 1;
+		int prevDMNum = RuntimeConfig.displayingImage.DM - 1;
 		if (prevDMNum < 0) {
 			prevDMNum += Config.PREVIEWER_DM_NAMES.length;
 		}

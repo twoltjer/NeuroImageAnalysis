@@ -4,6 +4,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import global.DebugMessenger;
+import global.RuntimeConfig;
+import processing.BufferedImageContainer;
 
 /**
  * A class that runs its actionPerformed method whenever a button is clicked
@@ -35,7 +37,20 @@ public class ButtonClick implements ActionListener {
 			
 		}
 		if(e.getSource().equals(GUIObjects.PreviewerObjects.prevImgButton)) {
+			DebugMessenger.out("Previous image button clicked");
+			BufferedImageContainer newDispImg = RuntimeConfig.displayingImage.cloneUnbuffered();
+			newDispImg.indexNumber -= 1;
+			newDispImg.setImageFile();
+			for(BufferedImageContainer bic : RuntimeConfig.bufferedImages) {
+				if(bic.equals(newDispImg)) {
+					newDispImg = bic;
+					break;
+				}
+			}
 			
+			
+					
+			// If image index is zero, disable this button. If not, enable it.
 		}
 		if(e.getSource().equals(GUIObjects.PreviewerObjects.prevDMButton)) {
 			
