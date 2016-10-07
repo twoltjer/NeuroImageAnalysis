@@ -19,7 +19,6 @@ import javax.swing.JOptionPane;
 
 public class Main {
 	static File jarFile = null; 
-;
 	public static void main(String[] args) throws IOException {
 		JFrame window = new JFrame("NIA Patcher v1.0");
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
