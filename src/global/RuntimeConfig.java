@@ -60,7 +60,7 @@ public class RuntimeConfig {
 	 * The image files in the scanned directory
 	 */
 	public static ArrayList<File> imageFiles = new ArrayList<File>();
-	
+
 	// ==========================================================================
 	// |                             CHANGING RUNTIME                           |
 	// ==========================================================================
@@ -78,16 +78,21 @@ public class RuntimeConfig {
 	 */
 	public static String outputFileDirButtonText = Config.CHOOSER_HUB_IMAGE_DIR_CHOOSER_BUTTON_TEXT;
 	/**
-	 * The image being displayed
+	 * The current threshold. By default, it is set to
+	 * <b>Config.THRESH_DEFAULT</b>
 	 */
-	public static BufferedImageContainer displayingImage;
+	public static int threshold;
 	/**
-	 * List of all images
+	 * The display mode number. The meaning behind this number is found in the
+	 * <b>GUIThread</b> class, which holds the <b>DM_COLOR</b>,
+	 * <b>DM_GRAYSCALE</b>, and <b>DM_MONOCHROME</b> constants
 	 */
-	public static ArrayList<BufferedImageContainer> images = new ArrayList<BufferedImageContainer>();
-	
+	public static int displayModeNumber;
+
+	public static BufferedImageContainer previewerDisplayImage;
+
 	public static ArrayList<BufferedImageContainer> bufferedImages = new ArrayList<BufferedImageContainer>();
-	
+
 	// ==========================================================================
 	// |                                 METHODS                                |
 	// ==========================================================================
@@ -147,10 +152,11 @@ public class RuntimeConfig {
 
 	/**
 	 * Finds the next DM number
+	 * 
 	 * @return the next DM number
 	 */
 	public static int getNextDMNumber() {
-		int nextDMNum = RuntimeConfig.displayingImage.DM + 1;
+		int nextDMNum = RuntimeConfig.displayModeNumber + 1;
 		if (!(nextDMNum - Config.PREVIEWER_DM_NAMES.length < 0)) {
 			nextDMNum -= Config.PREVIEWER_DM_NAMES.length;
 		}
@@ -159,10 +165,11 @@ public class RuntimeConfig {
 
 	/**
 	 * Finds the previous DM number
+	 * 
 	 * @return the previous DM number
 	 */
 	public static int getPrevDMNumber() {
-		int prevDMNum = RuntimeConfig.displayingImage.DM - 1;
+		int prevDMNum = RuntimeConfig.displayModeNumber - 1;
 		if (prevDMNum < 0) {
 			prevDMNum += Config.PREVIEWER_DM_NAMES.length;
 		}
@@ -171,6 +178,7 @@ public class RuntimeConfig {
 
 	/**
 	 * Gets a String status based on the settings of variables in this class
+	 * 
 	 * @return the status of the program, in String form
 	 */
 	public static String getStatus() {

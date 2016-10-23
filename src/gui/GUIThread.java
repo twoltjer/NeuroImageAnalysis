@@ -9,6 +9,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -19,7 +20,6 @@ import javax.swing.JTextArea;
 import global.Config;
 import global.DebugMessenger;
 import global.RuntimeConfig;
-import processing.BufferedImageContainer;
 
 /**
  * Thread that starts the GUI, and contains and runs GUI methods.
@@ -29,9 +29,6 @@ import processing.BufferedImageContainer;
 public class GUIThread implements Runnable {
 	public static final int CHOOSER_HUB = 0;
 	public static final int IMAGE_PREVIEWER = 1;
-	public static final int DM_COLOR = 0;
-	public static final int DM_GRAYSCALE = 1;
-	public static final int DM_MONOCHROME = 2;
 	private int guiNumber;
 	
 	// ==========================================================================
@@ -172,15 +169,19 @@ public class GUIThread implements Runnable {
 	 */
 	private void createPreviewer() {
 		DebugMessenger.out("Creating image previewer");
+		// This buffer happens as fast as possible
+		BufferManager.initialBuffer();
+		
 		setDefaultPreviewerVars();
 		instantiatePreviewerObjects();
 		setUpPreviewerGUI();
-		//initialBuffer();
+		//initialBufferComplete();
 		assignPreviewerButtons();
 	}
 	
 	private void setDefaultPreviewerVars() {
-		RuntimeConfig.displayingImage = new BufferedImageContainer(GUIThread.DM_COLOR, Config.THRESH_DEFAULT, 0);
+		RuntimeConfig.displayModeNumber = RuntimeConfig.previewerDisplayImage.DM;
+		RuntimeConfig.threshold = RuntimeConfig.previewerDisplayImage.thresh;
 		RuntimeConfig.isBuffering = true;
 	}
 	
@@ -203,7 +204,7 @@ public class GUIThread implements Runnable {
 		GUIObjects.PreviewerObjects.prevImgButton = new JButton(Config.PREVIEWER_PREV_BUTTON_TEXT);
 		GUIObjects.PreviewerObjects.rightButtonPanel = new JPanel();
 		GUIObjects.PreviewerObjects.statusLabel = new JLabel(RuntimeConfig.getStatus());
-		GUIObjects.PreviewerObjects.threshBotLabel = new JLabel(Integer.toString(RuntimeConfig.displayingImage.thresh));
+		GUIObjects.PreviewerObjects.threshBotLabel = new JLabel(Integer.toString(RuntimeConfig.threshold));
 		GUIObjects.PreviewerObjects.threshDisplayPanel = new JPanel();
 		GUIObjects.PreviewerObjects.threshTopLabel = new JLabel(Config.PREVIEWER_THRESH_LABEL_TOP_TEXT);
 		DebugMessenger.out("Done creating previewer objects");
@@ -211,6 +212,7 @@ public class GUIThread implements Runnable {
 	
 	private void setUpPreviewerGUI() {
 		DebugMessenger.out("Setting up previewer");
+		GUIObjects.ChooserObjects.chooserFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		Container pane = GUIObjects.PreviewerObjects.previewFrame.getContentPane();
 		pane.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -265,11 +267,9 @@ public class GUIThread implements Runnable {
 		// is not left, is not right, is not top, is bot
 		c.insets = createInsets(false, false, false, true);
 		GUIObjects.PreviewerObjects.bufferProgress.setPreferredSize(Config.PREVIEWER_PROG_BAR_SIZE);
-		/*
-		 * These two lines set text on the actual progress bar. Maybe in a future release....
 		GUIObjects.PreviewerObjects.bufferProgress.setStringPainted(true);
 		GUIObjects.PreviewerObjects.bufferProgress.setString(GUIObjects.PreviewerObjects.statusLabel.getText());
-		*/
+		
 		pane.add(GUIObjects.PreviewerObjects.bufferProgress, c);
 		GUIObjects.PreviewerObjects.previewFrame.pack();
 		GUIObjects.PreviewerObjects.previewFrame.setVisible(true);
@@ -293,11 +293,10 @@ public class GUIThread implements Runnable {
 	}
 
 	private void setUpPreviewerTopCenterPanel() {
-		DebugMessenger.out("Setting up top center previewer panel");
-		//TODO: This is a total joke panel. It'll get done sooner or later. 
-		
+		DebugMessenger.out("Setting up previewer top center panel. This is the image panel");
+		GUIObjects.PreviewerObjects.imagePanel.add(new JLabel(new ImageIcon(RuntimeConfig.previewerDisplayImage.image)));
+		DebugMessenger.out("Done setting up previewer top center panel");
 	}
-	
 	private void setUpPreviewerTopRightPanel() {
 		DebugMessenger.out("Setting up previewer top right panel");
 		GUIObjects.PreviewerObjects.rightButtonPanel.setLayout(new GridBagLayout());

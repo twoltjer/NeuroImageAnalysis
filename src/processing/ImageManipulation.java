@@ -1,74 +1,87 @@
 package processing;
 
-import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 
+import global.DebugMessenger;
+
 public class ImageManipulation {
-	/**
-	 * Scales image to the desired size. Note that this method modifies (and
-	 * returns) the image supplied in the argument, so if it is desired to keep
-	 * the original image, a copy should be made first using the copyImage()
-	 * method.
-	 * 
-	 * @param image
-	 *            The image to be scaled. Note that this will be modified.
-	 * @param maxSize
-	 *            Maximum size for the scaled image.
-	 * @param minSize
-	 *            Minimum size for the scaled image. This should have dimension
-	 *            of about half of the maxSize's. If it is larger, then it is
-	 *            likely to return a null object.
-	 * @return A copy of the image, scaled.
-	 */
-	public static BufferedImage scaleImage(BufferedImage image, Dimension maxSize, Dimension minSize) {
-		BufferedImage scaled;
-		/*
-		 * TODO: Make the size determination use width as well. Notice how
-		 * scaleUp() and scaleDown() use only the height component of the
-		 * Dimension objects they are passed.
-		 */
-		boolean scaleDown = image.getHeight() > maxSize.height;
-		if (scaleDown) {
-			scaled = scaleDown(image, maxSize);
-		} else { // scale up
-			scaled = scaleUp(image, minSize);
+	public static BufferedImage scaleDown(BufferedImage image, int maxSize) {
+		DebugMessenger.out("Scaling image down");
+		int imageSize = calcImageSize(image);
+		int numberOfScalings = 0;
+		while(imageSize > maxSize) {
+			imageSize /= 4;
+			numberOfScalings += 1;
 		}
-		return scaled;
-	}
-
-	private static BufferedImage scaleDown(BufferedImage image, Dimension maxSize) {
-		while (image.getHeight() > maxSize.height) {
-			BufferedImage temp = new BufferedImage(image.getWidth() / 2, image.getHeight() / 2, image.getType());
-			for (int y = 0; y < temp.getHeight(); y++) {
-				for (int x = 0; x < temp.getWidth(); x++) {
-					temp.setRGB(x, y, image.getRGB(x * 2, y * 2));
-				}
+		DebugMessenger.out("Scaling down " + numberOfScalings + " times");
+		int dimensionDivisor = (int) Math.pow(2.0d, ((double) numberOfScalings)); 
+		BufferedImage newImage = new BufferedImage(image.getWidth()/dimensionDivisor, image.getHeight()/dimensionDivisor, BufferedImage.TYPE_INT_RGB);
+		for(int y = 0; y < newImage.getHeight(); y++) {
+			for(int x = 0; x < newImage.getWidth(); x++) {
+				newImage.setRGB(x, y, getScaledImageRGBForScaleDown(x, y, numberOfScalings, image));
 			}
-			image.flush();
-			image = temp;
 		}
-		return image;
+		DebugMessenger.out("Done scaling down image");
+		return newImage;
 	}
-
-	private static BufferedImage scaleUp(BufferedImage image, Dimension minSize) {
-		while (image.getHeight() < minSize.height) {
-			BufferedImage temp = new BufferedImage(image.getWidth() * 2, image.getHeight() * 2, image.getType());
-			for (int y = 0; y < temp.getHeight(); y++) {
-				for (int x = 0; x < temp.getWidth(); x++) {
-					temp.setRGB(x, y, image.getRGB(x / 2, y / 2));
-				}
+	
+	public static BufferedImage scaleUp(BufferedImage image, int minSize) {
+		DebugMessenger.out("Scaling image up");
+		int imageSize = calcImageSize(image);
+		int numberOfScalings = 0;
+		while(imageSize < minSize) {
+			imageSize *= 4;
+			numberOfScalings += 1;
+		}
+		DebugMessenger.out("Scaling up " + numberOfScalings + " times");
+		int dimensionMultiplier = (int) Math.pow(2.0d, ((double) numberOfScalings)); 
+		int newImageHeight = image.getHeight()*dimensionMultiplier;
+		int newImageWidth = image.getWidth()*dimensionMultiplier;
+		BufferedImage newImage = new BufferedImage(newImageWidth, newImageHeight, BufferedImage.TYPE_INT_RGB);
+		for(int y = 0; y < newImageHeight; y++) {
+			for(int x = 0; x < newImageWidth; x++) {
+				newImage.setRGB(x, y, getScaledImageRGBForScaleUp(x, y, dimensionMultiplier, image));
 			}
-			image.flush();
-			image = temp;
 		}
-		return image;
+		return newImage;
 	}
-
-	public BufferedImage convertFromColorToGrayscale(BufferedImage colorImage) {
+	
+	public static BufferedImage convertFromColorToGrayscale(BufferedImage colorImage) {
 		return null;
 	}
-
-	public BufferedImage applyThreshold(BufferedImage grayscale, int threshold) {
+	
+	public static BufferedImage applyThreshold(BufferedImage grayscale, int threshold) {
 		return null;
 	}
+	
+	private static int calcImageSize(BufferedImage image) {
+		return image.getHeight() * image.getHeight();
+	}
+	
+	private static int getScaledImageRGBForScaleDown(int newx, int newy, int dimensionDivisor, BufferedImage originalImage) {
+		int oldx = newx * dimensionDivisor;
+		int imageWidth = originalImage.getWidth();
+		while(oldx > imageWidth) {
+			oldx--;
+		}
+		int oldy = newy * dimensionDivisor;
+		int imageHeight = originalImage.getHeight();
+		while(oldy > imageHeight) {
+			oldy--;
+		}
+		return originalImage.getRGB(oldx, oldy);
+	}
+	private static int getScaledImageRGBForScaleUp(int newx, int newy, int dimensionMultiplier, BufferedImage originalImage) {
+		int oldx = newx / dimensionMultiplier;
+		int imageWidth = originalImage.getWidth();
+		while(oldx > imageWidth) {
+			oldx--;
+		}
+		int oldy = newy / dimensionMultiplier;
+		int imageHeight = originalImage.getHeight();
+		while(oldy > imageHeight) {
+			oldy--;
+		}
+		return originalImage.getRGB(oldx, oldy);
+	}	
 }

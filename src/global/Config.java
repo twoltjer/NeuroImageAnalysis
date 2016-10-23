@@ -120,8 +120,11 @@ public class Config {
 	 */
 	public static final Dimension PREVIEWER_SMALL_BUTTON_SIZE = new Dimension(80,70);
 
-	/**
-	 * Size of the progress bar in the previewer
-	 */
 	public static final Dimension PREVIEWER_PROG_BAR_SIZE = new Dimension(460, 78);
+	
+	public static final Dimension PREVIEWER_IMAGE_MIN_SIZE = new Dimension(300, 200);
+	
+	public static final Dimension PREVIEWER_IMAGE_MAX_SIZE = new Dimension(600, 400);
+	
+	
 }
