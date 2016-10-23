@@ -20,7 +20,7 @@ public class BufferedImageContainer {
 	public int thresh;
 	public int indexNumber;
 	public boolean scaled ;
-	public boolean buffered = false;
+	public boolean isBuffered = false;
 	public BufferedImage image;
 	public File imageFile;
 	public BufferedImageContainer(int DM, int thresh, int indexNumber, boolean scaled) {
@@ -52,24 +52,74 @@ public class BufferedImageContainer {
 			}
 			DebugMessenger.out("Done reading image");
 		} catch (IOException e) {
-			DebugMessenger.out("There was a problem reading the image");
+			DebugMessenger.out("There was a problem reading the image. Check that the image is a format that works.");
 			e.printStackTrace();
 		}
-		this.buffered = true;
+		this.isBuffered = true;
 		DebugMessenger.out("Done buffering image");
 	}
 	
+	/**
+	 * Releases image from memory. Having too many images buffered will cause
+	 * the program to use up too much memory and possibly even crash.
+	 */
 	public void unbufferImage() {
-		//TODO: Write this method
-		this.buffered = false;
+		if(this.isBuffered)
+			image.flush();
+		this.isBuffered = false;
 	}
-	
+
 	private void getImageFile() {
 		DebugMessenger.out("Fetching image file object");
 		this.imageFile = RuntimeConfig.imageFiles.get(this.indexNumber);
 		DebugMessenger.out("Done fetching image file object");
 	}
 	
+	/**
+	 * Pulls image file again. This is typically run after the index number has been manually changed.
+	 */
+	public void resetImageFile() {
+		getImageFile();
+	}
+	
+	/**
+	 * Checks if this BufferedImageContainer is roughly same as another. This is
+	 * ideal for checking if an image has already been buffered.
+	 * 
+	 * @param other
+	 *            The other BufferedImageContainer
+	 * @return true if all parts of the image containers are the same.
+	 */
+	public boolean equals(BufferedImageContainer other) {
+		return false;
+	}
+
+	/**
+	 * Same as equals, except checks deeper properties of the objects
+	 * @param other
+	 * @return if they are the same container
+	 */
+	public boolean deepEquals(BufferedImageContainer other) {
+		if(!equals(other))
+			return false;
+		if(!this.imageFile.getAbsolutePath().equals(other.imageFile.getAbsolutePath()))
+			return false;
+		return true;
+	}
+	
+	/**
+	 * Creates a clone of the BufferedImageContainer object. The clone is never
+	 * buffered. If desired, it can always be buffered using the bufferImage()
+	 * method.
+	 * 
+	 * @return an unbuffered clone object
+	 */
+	public BufferedImageContainer cloneUnbuffered() {
+		BufferedImageContainer clone = new BufferedImageContainer(DM, thresh, indexNumber, scaled);
+		clone.scaled = this.scaled;
+		clone.imageFile = this.imageFile;
+		return clone;
+	}
 }
 
 // End processing/BufferedImageContainer.java

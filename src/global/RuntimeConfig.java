@@ -5,7 +5,9 @@ import java.util.ArrayList;
 
 import javax.swing.JButton;
 
+import gui.BufferManager;
 import gui.GUIObjects;
+import gui.GUIThread;
 import processing.BufferedImageContainer;
 
 /**
@@ -76,7 +78,7 @@ public class RuntimeConfig {
 	 * The output file directory button text, initally set by
 	 * Config.OUTPUT_FILE_DIR_CHOOSER_BUTTON_TEXT
 	 */
-	public static String outputFileDirButtonText = Config.CHOOSER_HUB_IMAGE_DIR_CHOOSER_BUTTON_TEXT;
+	public static String outputFileDirButtonText = Config.CHOOSER_HUB_OUTPUT_FILE_DIR_CHOOSER_BUTTON_TEXT;
 	/**
 	 * The current threshold. By default, it is set to
 	 * <b>Config.THRESH_DEFAULT</b>
@@ -104,7 +106,7 @@ public class RuntimeConfig {
 	 * <li>Output File Directory Chooser button text</li>
 	 * </ul>
 	 */
-	public static void refreshVars() {
+	public static void refreshChooserVars() {
 		if (imageDirChosen) {
 			DebugMessenger.out(
 					"Image directory chosen, so setting image directory variable from file chooser, and refreshing the button to show the proper text.");

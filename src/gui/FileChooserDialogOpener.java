@@ -61,7 +61,7 @@ public class FileChooserDialogOpener implements Runnable {
 			if (imageFileChooserReturn == 0) {
 				DebugMessenger.out("File chooser returned success. Setting image directory chosen to true and refreshing variables.");
 				RuntimeConfig.imageDirChosen = true;
-				RuntimeConfig.refreshVars();
+				RuntimeConfig.refreshChooserVars();
 			}
 
 		}
@@ -80,7 +80,7 @@ public class FileChooserDialogOpener implements Runnable {
 			if (outputFileFileChooserReturn == 0) {
 				DebugMessenger.out("File chooser returned success. Setting output file directory chosen to true and refreshing variables.");
 				RuntimeConfig.outputFileDirChosen = true;
-				RuntimeConfig.refreshVars();
+				RuntimeConfig.refreshChooserVars();
 			}
 		}
 	}

@@ -144,7 +144,7 @@ public class GUIThread implements Runnable {
 		GUIObjects.ChooserObjects.chooserFrame.add(GUIObjects.ChooserObjects.chooserHubMainPanel);
 		GUIObjects.ChooserObjects.chooserFrame.pack();
 		DebugMessenger.out("A quick refresh before showing the chooser hub");
-		RuntimeConfig.refreshVars();
+		RuntimeConfig.refreshChooserVars();
 		centerWindow(GUIObjects.ChooserObjects.chooserFrame);
 		GUIObjects.ChooserObjects.chooserFrame.setVisible(true);
 		DebugMessenger.out("Finished creating chooser window");
@@ -175,6 +175,7 @@ public class GUIThread implements Runnable {
 		setDefaultPreviewerVars();
 		instantiatePreviewerObjects();
 		setUpPreviewerGUI();
+		destroyChooserHub();
 		//initialBufferComplete();
 		assignPreviewerButtons();
 	}
