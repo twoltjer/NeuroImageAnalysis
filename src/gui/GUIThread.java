@@ -212,7 +212,7 @@ public class GUIThread implements Runnable {
 	
 	private void setUpPreviewerGUI() {
 		DebugMessenger.out("Setting up previewer");
-		GUIObjects.ChooserObjects.chooserFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		GUIObjects.PreviewerObjects.previewFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		Container pane = GUIObjects.PreviewerObjects.previewFrame.getContentPane();
 		pane.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
