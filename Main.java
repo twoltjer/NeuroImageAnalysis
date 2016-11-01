@@ -100,7 +100,7 @@ public class Main {
 				updateButton.setText("No connection to server");
 			}
 		}
-		System.out.println(localVersionExists);
+		System.out.println("Local version exists: " + localVersionExists);
 		if (localVersionExists) {
 			launchButton.setEnabled(true);
 		}
