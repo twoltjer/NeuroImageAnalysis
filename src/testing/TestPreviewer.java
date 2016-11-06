@@ -10,7 +10,7 @@ import processing.BufferedImageContainer;
 
 public class TestPreviewer {
 
-	public static final String IMAGE_DIRECTORY = "/home/thomas/projects/NeuroImageAnalysis/test_images";
+	public static final String IMAGE_DIRECTORY = "/home/thomas/code/eclipse-workspace/NIA/test_images2";
 	
 	/**
 	 * Simply a test function to start the program from. Runs the test() method.
@@ -21,18 +21,14 @@ public class TestPreviewer {
 	}
 	
 	public static void test() {
+		MemBarMaker.main(null);
 		GUIThread testThread = new GUIThread();
-		RuntimeConfig.imageDir = new File(IMAGE_DIRECTORY);
+		RuntimeConfig.imageDir = new File(IMAGE_DIRECTORY); // Uses hard coded image directory
 		RuntimeConfig.imageDirChosen = true;
 		File[] dirContents = RuntimeConfig.imageDir.listFiles();
 		for(File f : dirContents) {
 			RuntimeConfig.imageFiles.add(f);
 		}
-		testThread.start(GUIThread.IMAGE_PREVIEWER);
-	}
-	
-	
-	public static ArrayList<Boolean> test_automated() {
-		return null; //TODO: Write the automated tests for the preivewer
+		testThread.startThread(GUIThread.LAUNCH_IMAGE_PREVIEWER);
 	}
 }

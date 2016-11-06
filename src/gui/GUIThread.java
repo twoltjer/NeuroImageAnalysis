@@ -8,6 +8,9 @@ import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -26,41 +29,47 @@ import global.RuntimeConfig;
  * 
  * @author Thomas Woltjer
  */
-public class GUIThread implements Runnable {
-	public static final int CHOOSER_HUB = 0;
-	public static final int IMAGE_PREVIEWER = 1;
-	private int guiNumber;
+	public class GUIThread extends Thread {
+		public static final int CHOOSER_HUB = 0;
+		public static final int LAUNCH_IMAGE_PREVIEWER = 1;
+		public static final int DISABLE_PREVIEWER_BUTTONS = 2;
+		public static final int MEMORY_USAGE_WINDOW = 3;
+		private int guiNumber;
+		
+		// ==========================================================================
+		// |                               START CODE                               |
+		// ==========================================================================
+		
+		/**
+		 * Runs begins the thread. This method is also for pre-run configuration,
+		 * but so far there is none of that.
+		 * 
+		 * @param GUINumber
+		 *            The GUI number, indicating which GUI to start.
+		 */
+		public void startThread(int GUINumber) {
+			DebugMessenger.out("Starting new thread for GUI");
+			guiNumber = GUINumber;
+			start();
+		}
 	
-	// ==========================================================================
-	// |                               START CODE                               |
-	// ==========================================================================
-	
-	/**
-	 * Runs begins the thread. This method is also for pre-run configuration,
-	 * but so far there is none of that.
-	 * 
-	 * @param GUINumber
-	 *            The GUI number, indicating which GUI to start.
-	 */
-	public void start(int GUINumber) {
-		DebugMessenger.out("Starting new thread for GUI");
-		guiNumber = GUINumber;
-		run();
-	}
-
-	/**
-	 * Starts the thread, and runs the createChooserHub() and assignChooserHub()
-	 * methods.
-	 */
-	@Override
-	public void run() {
-		// Create the chooser, and the rest should run from there
-		DebugMessenger.out("Thread running");
-		if (guiNumber == GUIThread.CHOOSER_HUB)
-			createChooserHub();
-		if (guiNumber == GUIThread.IMAGE_PREVIEWER)
-			createPreviewer();
-	}
+		/**
+		 * Starts the thread, and runs the createChooserHub() and assignChooserHub()
+		 * methods.
+		 */
+		@Override
+		public void run() {
+			// Create the chooser, and the rest should run from there
+			DebugMessenger.out("Thread running");
+			if (guiNumber == GUIThread.CHOOSER_HUB)
+				createChooserHub();
+			if (guiNumber == GUIThread.LAUNCH_IMAGE_PREVIEWER)
+				createPreviewer();
+			if (guiNumber == GUIThread.DISABLE_PREVIEWER_BUTTONS)
+				disablePreviewerButtons();
+			if (guiNumber == GUIThread.MEMORY_USAGE_WINDOW)
+				createMemoryUsageWindow();
+		}
 	
 	// ==========================================================================
 	// |                            CHOOSER HUB CODE                            |
@@ -73,6 +82,7 @@ public class GUIThread implements Runnable {
 		DebugMessenger.out("Creating chooser hub");
 		instantiateChooserHubObjects();
 		setUpChooserHubGUI();
+		RuntimeConfig.chooserHubExists = true;
 		assignChooserHubButtons();
 	}
 
@@ -80,8 +90,16 @@ public class GUIThread implements Runnable {
 	 * Removes the chooser hub from view, then memory.
 	 */
 	public void destroyChooserHub() {
-		GUIObjects.ChooserObjects.chooserFrame.setVisible(false);
-		GUIObjects.ChooserObjects.chooserFrame.dispose();
+		DebugMessenger.out("Destroying chooser hub");
+		if(RuntimeConfig.chooserHubExists) {
+			GUIObjects.ChooserObjects.chooserFrame.setVisible(false);
+			GUIObjects.ChooserObjects.chooserFrame.dispose();
+			RuntimeConfig.chooserHubExists = false;
+			DebugMessenger.out("Chooser hub destroyed");
+		} else {
+			DebugMessenger.out("Chooser hub doesn't exist, so skipping destruction.");
+		}
+		
 	}
 
 	/**
@@ -176,8 +194,12 @@ public class GUIThread implements Runnable {
 		instantiatePreviewerObjects();
 		setUpPreviewerGUI();
 		destroyChooserHub();
-		//initialBufferComplete();
+		assignKeyShortcuts();
 		assignPreviewerButtons();
+		
+		DebugMessenger.out("Done with quick setup. Now doing long buffer");
+		// Completely buffer
+		
 	}
 	
 	private void setDefaultPreviewerVars() {
@@ -274,6 +296,7 @@ public class GUIThread implements Runnable {
 		pane.add(GUIObjects.PreviewerObjects.bufferProgress, c);
 		GUIObjects.PreviewerObjects.previewFrame.pack();
 		GUIObjects.PreviewerObjects.previewFrame.setVisible(true);
+		centerWindow(GUIObjects.PreviewerObjects.previewFrame);
 	}
 	
 	private void setUpPreviewerTopLeftPanel() {
@@ -366,20 +389,138 @@ public class GUIThread implements Runnable {
 		GUIObjects.PreviewerObjects.analyzeButton.setPreferredSize(Config.PREVIEWER_LARGE_BUTTON_SIZE);
 		DebugMessenger.out("Done setting up center right panel");
 	}
-	
+
+	private void assignKeyShortcuts() {
+		DebugMessenger.out("Requesting focus for the preview frame.");
+		GUIObjects.PreviewerObjects.previewFrame.requestFocus();
+		class CloseListener implements KeyListener {
+			public ArrayList<Integer> keysPressed = new ArrayList<Integer>(); //Stored as key codes
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				DebugMessenger.out("KEY PRESSED");
+				int kc = arg0.getKeyCode();
+				keysPressed.add(new Integer(kc));
+				if(keysPressed.contains(new Integer(17))) {
+					if(keysPressed.contains(new Integer(88))) {
+						DebugMessenger.out("Keyboard shortcut for closing triggered. Exiting now.");
+						System.exit(0);
+					}
+				}
+				
+			}
+
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				DebugMessenger.out("KEY RELEASED");
+				keysPressed.remove(new Integer(arg0.getKeyCode()));
+			}
+
+			@Override
+			public void keyTyped(KeyEvent arg0) {
+				// Empty method
+			}
+			
+		}
+		DebugMessenger.out("Assigning keyboard shortcuts.");
+		GUIObjects.PreviewerObjects.previewFrame.addKeyListener(new CloseListener());
+	}
+
 	private void assignPreviewerButtons() {
 		DebugMessenger.out("Setting action listeners for Previewer buttons");
-		GUIObjects.PreviewerObjects.prevImgButton.addActionListener(new ButtonClick());
-		GUIObjects.PreviewerObjects.prevDMButton.addActionListener(new ButtonClick());
-		GUIObjects.PreviewerObjects.nextImgButton.addActionListener(new ButtonClick());
-		GUIObjects.PreviewerObjects.nextDMButton.addActionListener(new ButtonClick());
-		GUIObjects.PreviewerObjects.cancelButton.addActionListener(new ButtonClick());
-		GUIObjects.PreviewerObjects.decLgButton.addActionListener(new ButtonClick());
-		GUIObjects.PreviewerObjects.decSmButton.addActionListener(new ButtonClick());
-		GUIObjects.PreviewerObjects.incSmButton.addActionListener(new ButtonClick());
-		GUIObjects.PreviewerObjects.incLgButton.addActionListener(new ButtonClick());
-		GUIObjects.PreviewerObjects.analyzeButton.addActionListener(new ButtonClick());
+		JButton[] buttons = getPreviewerButtons();
+		for(JButton jb : buttons) {
+			jb.addActionListener(new ButtonClick());
+		}
 		DebugMessenger.out("Done setting action listeners for Previewer buttons");
+	}
+	
+	
+	private void disablePreviewerButtons() {
+		DebugMessenger.out("Disabling previewer buttons");
+		JButton[] buttons = getPreviewerButtons();
+		for(JButton jb : buttons) {
+			jb.setEnabled(false);
+		}
+		DebugMessenger.out("Done disabling previewer buttons");
+	}
+	
+	public JButton[] getPreviewerButtons() {
+		DebugMessenger.out("Getting list of previewer buttons");
+		JButton[] buttons = { GUIObjects.PreviewerObjects.prevDMButton, 
+				GUIObjects.PreviewerObjects.prevDMButton,
+				GUIObjects.PreviewerObjects.nextImgButton, 
+				GUIObjects.PreviewerObjects.nextDMButton, 
+				GUIObjects.PreviewerObjects.cancelButton, 
+				GUIObjects.PreviewerObjects.decLgButton, 
+				GUIObjects.PreviewerObjects.decSmButton, 
+				GUIObjects.PreviewerObjects.incLgButton, 
+				GUIObjects.PreviewerObjects.incSmButton, 
+				GUIObjects.PreviewerObjects.analyzeButton };
+		return buttons;
+	}
+
+	// ==========================================================================
+	// |                              MEMORY USAGE                              |
+	// ==========================================================================
+
+	public static void createMemoryUsageWindow() {
+		DebugMessenger.out("Starting mem window");
+		JFrame frame = new JFrame(Config.PROGRAM_NAME);
+		DebugMessenger.out("Requesting focus for the memory window.");
+		frame.requestFocus();
+		class CloseListener implements KeyListener {
+			public ArrayList<Integer> keysPressed = new ArrayList<Integer>(); //Stored as key codes
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				DebugMessenger.out("KEY PRESSED");
+				int kc = arg0.getKeyCode();
+				keysPressed.add(new Integer(kc));
+				if(keysPressed.contains(new Integer(17))) {
+					if(keysPressed.contains(new Integer(88))) {
+						DebugMessenger.out("Keyboard shortcut for closing triggered. Exiting now.");
+						System.exit(0);
+					}
+				}
+				
+			}
+
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				DebugMessenger.out("KEY RELEASED");
+				keysPressed.remove(new Integer(arg0.getKeyCode()));
+			}
+
+			@Override
+			public void keyTyped(KeyEvent arg0) {
+				// Empty method
+			}
+			
+		}
+		DebugMessenger.out("Assigning keyboard shortcuts.");
+		frame.addKeyListener(new CloseListener());
+		JProgressBar memBar = new JProgressBar();
+		memBar.setPreferredSize(Config.PREVIEWER_PROG_BAR_SIZE);
+		memBar.setMaximum(300);
+		frame.add(memBar);
+		frame.pack();
+		frame.setVisible(true);	
+		int used = (int) Runtime.getRuntime().totalMemory() / 1000;
+		int total = (int) Runtime.getRuntime().maxMemory() / 1000;
+		while(true) {
+			try {
+				Thread.sleep(200);
+				used+= 10000;
+				String s = used + " / " + total;
+				memBar.setMaximum(total);
+				memBar.setValue(used);
+				memBar.setToolTipText(s);
+				memBar.setString(s);
+				memBar.setStringPainted(true);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	// ==========================================================================

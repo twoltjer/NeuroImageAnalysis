@@ -1,7 +1,9 @@
 package main;
 
+import global.Config;
 import global.DebugMessenger;
 import gui.GUIThread;
+import testing.MemBarMaker;
 
 /**
  * Main class.
@@ -17,8 +19,9 @@ public class Main {
 		// start other threads
 		DebugMessenger.out("Starting Main");
 		GUIThread guiThread = new GUIThread();
-		guiThread.start(GUIThread.CHOOSER_HUB);
+		guiThread.startThread(GUIThread.CHOOSER_HUB);
+		if(Config.DEBUG_OUTPUT_ENABLED)
+			MemBarMaker.main(null);
 		DebugMessenger.out("Main complete");
 	}
-
 }

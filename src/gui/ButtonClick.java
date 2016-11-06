@@ -39,7 +39,7 @@ public class ButtonClick implements ActionListener {
 			Preprocessing.readImageDirectory();
 			DebugMessenger.out("Creating GUIThread for previewer");
 			GUIThread gt = new GUIThread();
-			gt.start(GUIThread.IMAGE_PREVIEWER);
+			gt.startThread(GUIThread.LAUNCH_IMAGE_PREVIEWER);
 
 		}
 		if (e.getSource().equals(GUIObjects.PreviewerObjects.prevImgButton)) {

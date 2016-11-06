@@ -37,9 +37,14 @@ public class RuntimeConfig {
 	 */
 	public static boolean readyToScanImageDir = false;
 	/**
+	 * Variable that stores whether the chooser hub exists. This is to make
+	 * tests function properly, when skipping over creating a chooser hub.
+	 */
+	public static boolean chooserHubExists = false;
+	/**
 	 * Indicates across the program if the previewer is buffering or not
 	 */
-	public static boolean isBuffering;
+	public static boolean isBuffering = false;
 
 	// ==========================================================================
 	// |                             USER SETTINGS                              |
