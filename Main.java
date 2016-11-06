@@ -48,7 +48,7 @@ public class Main {
 		if (System.getProperty("os.name").toUpperCase().contains("WIN")) {
 			workDir = System.getenv("AppData");
 		} else {
-			workDir = System.getProperty("user.home") + "/.config/share";
+			workDir = System.getProperty("user.home") + "/.local/share";
 		}
 		File appDataDir = new File(workDir);
 		File niaDataDir = new File(appDataDir, "NIA");
