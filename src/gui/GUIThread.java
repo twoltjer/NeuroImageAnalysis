@@ -199,7 +199,7 @@ import global.RuntimeConfig;
 		
 		DebugMessenger.out("Done with quick setup. Now doing long buffer");
 		// Completely buffer
-		
+		BufferManager.buffer();
 	}
 	
 	private void setDefaultPreviewerVars() {
@@ -459,6 +459,19 @@ import global.RuntimeConfig;
 		return buttons;
 	}
 
+	public static void updateBufferProgBar() {
+		// Maximum is set by BufferManager.buffer() method
+		int value = RuntimeConfig.bufferedImages.size();
+		GUIObjects.PreviewerObjects.bufferProgress.setValue(value);
+		if(value == GUIObjects.PreviewerObjects.bufferProgress.getMaximum()) {
+			RuntimeConfig.isBuffering = false;
+		}
+		GUIObjects.PreviewerObjects.bufferProgress.setString("Buffering " + value + "/" + GUIObjects.PreviewerObjects.bufferProgress.getMaximum());
+		GUIObjects.PreviewerObjects.bufferProgress.setStringPainted(true);
+		
+	}
+
+	
 	// ==========================================================================
 	// |                              MEMORY USAGE                              |
 	// ==========================================================================
@@ -504,20 +517,19 @@ import global.RuntimeConfig;
 		frame.add(memBar);
 		frame.pack();
 		frame.setVisible(true);	
-		int used = (int) Runtime.getRuntime().totalMemory() / 1000;
-		int total = (int) Runtime.getRuntime().maxMemory() / 1000;
+
 		while(true) {
 			try {
-				Thread.sleep(200);
-				used+= 10000;
-				String s = used + " / " + total;
+				int used = (int) Runtime.getRuntime().totalMemory() / 1024 / 1024;
+				int total = (int) Runtime.getRuntime().maxMemory() / 1024 / 1024;
+				Thread.sleep(100);
+				String s = used + "M / " + total + "M";
 				memBar.setMaximum(total);
 				memBar.setValue(used);
 				memBar.setToolTipText(s);
 				memBar.setString(s);
 				memBar.setStringPainted(true);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

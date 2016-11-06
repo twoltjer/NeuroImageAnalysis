@@ -44,7 +44,7 @@ public class Config {
 	/**
 	 * Default threshold value
 	 */
-	public static final int THRESH_DEFAULT = 100;
+	public static final int THRESH_DEFAULT = 50; // Thresh scales 0-100
 	
 	// ==========================================================================
 	// |                                STRINGS                                 |

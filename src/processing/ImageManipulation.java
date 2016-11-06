@@ -1,5 +1,7 @@
 package processing;
 
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
 import global.DebugMessenger;
@@ -46,12 +48,37 @@ public class ImageManipulation {
 		return newImage;
 	}
 	
+	/**
+	 * High performance method to convert color images to grayscale
+	 * @param colorImage The color image
+	 * @return The grayscale image
+	 */
 	public static BufferedImage convertFromColorToGrayscale(BufferedImage colorImage) {
-		return null;
+		BufferedImage image = new BufferedImage(colorImage.getWidth(), colorImage.getHeight(),  
+			    BufferedImage.TYPE_BYTE_GRAY);  
+			Graphics g = image.getGraphics();  
+			g.drawImage(colorImage, 0, 0, null);  
+			g.dispose();  
+		return image;
 	}
 	
 	public static BufferedImage applyThreshold(BufferedImage grayscale, int threshold) {
-		return null;
+		int height = grayscale.getHeight();
+		int width = grayscale.getWidth();
+		BufferedImage mono = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				Color origColor = new Color(grayscale.getRGB(x, y));
+				float fThresh = (float) (((double) threshold) / 100 );
+				float colorV = getValue(origColor);
+				if(fThresh < colorV) {
+					mono.setRGB(x, y, Color.WHITE.getRGB());
+				} else {
+					mono.setRGB(x, y, Color.BLACK.getRGB());
+				}
+			}
+		}
+		return mono;
 	}
 	
 	private static int calcImageSize(BufferedImage image) {
@@ -83,5 +110,18 @@ public class ImageManipulation {
 			oldy--;
 		}
 		return originalImage.getRGB(oldx, oldy);
-	}	
+	}
+	
+	private static float[] colorToHsv(Color c) {
+		return Color.RGBtoHSB(c.getRed(), c.getGreen(), c.getBlue(), null);
+	}
+	
+	private static float getValue(Color c) {
+		float[] hsbVals = Color.RGBtoHSB(c.getRed(), c.getGreen(), c.getBlue(), null);
+		return hsbVals[2];
+	}
+	
+	public static float getValueTestAccessor(Color c) {
+		return getValue(c);
+	}
 }
