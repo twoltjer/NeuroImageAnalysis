@@ -32,8 +32,8 @@ import global.RuntimeConfig;
 	public class GUIThread extends Thread {
 		public static final int CHOOSER_HUB = 0;
 		public static final int LAUNCH_IMAGE_PREVIEWER = 1;
-		public static final int DISABLE_PREVIEWER_BUTTONS = 2;
-		public static final int MEMORY_USAGE_WINDOW = 3;
+		public static final int MEMORY_USAGE_WINDOW = 2;
+		public static final int PREVIEWER_FOCUS = 3;
 		private int guiNumber;
 		
 		// ==========================================================================
@@ -65,10 +65,10 @@ import global.RuntimeConfig;
 				createChooserHub();
 			if (guiNumber == GUIThread.LAUNCH_IMAGE_PREVIEWER)
 				createPreviewer();
-			if (guiNumber == GUIThread.DISABLE_PREVIEWER_BUTTONS)
-				disablePreviewerButtons();
 			if (guiNumber == GUIThread.MEMORY_USAGE_WINDOW)
 				createMemoryUsageWindow();
+			if (guiNumber == GUIThread.PREVIEWER_FOCUS)
+				runPreviewerFocusLoop();
 		}
 	
 	// ==========================================================================
@@ -423,8 +423,28 @@ import global.RuntimeConfig;
 		}
 		DebugMessenger.out("Assigning keyboard shortcuts.");
 		GUIObjects.PreviewerObjects.previewFrame.addKeyListener(new CloseListener());
+		DebugMessenger.out("Requesting start of preview focus thread");
+		GUIThread focusThread = new GUIThread();
+		focusThread.startThread(GUIThread.PREVIEWER_FOCUS);
 	}
 
+	private void runPreviewerFocusLoop() {
+		while(true) {
+			if(!GUIObjects.PreviewerObjects.previewFrame.hasFocus()) {
+				DebugMessenger.out("Resetting focus to previewer frame");
+				GUIObjects.PreviewerObjects.previewFrame.requestFocus();
+			} else {
+				// Uncomment the below line to spam the debug output with messages saying everything is okay
+				//DebugMessenger.out("Previewer frame still has focus. Doing nothing.");
+			}
+			try {
+				Thread.sleep(Config.THREAD_LOOP_WAIT_TIME_MILLIS);
+			} catch (InterruptedException e) {
+				System.err.println("Previewer focus loop thread failed to sleep. Must exit.");
+				System.exit(-1);
+			}
+		}
+	}
 	private void assignPreviewerButtons() {
 		DebugMessenger.out("Setting action listeners for Previewer buttons");
 		JButton[] buttons = getPreviewerButtons();
@@ -435,7 +455,7 @@ import global.RuntimeConfig;
 	}
 	
 	
-	private void disablePreviewerButtons() {
+	public void disablePreviewerButtons() {
 		DebugMessenger.out("Disabling previewer buttons");
 		JButton[] buttons = getPreviewerButtons();
 		for(JButton jb : buttons) {
@@ -470,6 +490,24 @@ import global.RuntimeConfig;
 		GUIObjects.PreviewerObjects.bufferProgress.setStringPainted(true);
 		
 	}
+	
+	public static void updatePreviewerDispImage() {
+		GUIObjects.PreviewerObjects.previewFrame.setVisible(false);
+		GUIObjects.PreviewerObjects.imagePanel.removeAll();
+		/*
+		while(!RuntimeConfig.isReadyToDisplay) {
+			try {
+				DebugMessenger.out("Continue waiting for image to be ready");
+				Thread.sleep(50);
+			} catch (InterruptedException e) {
+				DebugMessenger.out("ERROR: Thread failed to sleep for 50 millis");
+				System.exit(-1);
+			}
+		} */
+		GUIObjects.PreviewerObjects.imagePanel.add(new JLabel(new ImageIcon(RuntimeConfig.previewerDisplayImage.image)));
+		GUIObjects.PreviewerObjects.previewFrame.pack();
+		GUIObjects.PreviewerObjects.previewFrame.setVisible(true);
+	}
 
 	
 	// ==========================================================================
@@ -479,38 +517,6 @@ import global.RuntimeConfig;
 	public static void createMemoryUsageWindow() {
 		DebugMessenger.out("Starting mem window");
 		JFrame frame = new JFrame(Config.PROGRAM_NAME);
-		DebugMessenger.out("Requesting focus for the memory window.");
-		frame.requestFocus();
-		class CloseListener implements KeyListener {
-			public ArrayList<Integer> keysPressed = new ArrayList<Integer>(); //Stored as key codes
-			@Override
-			public void keyPressed(KeyEvent arg0) {
-				DebugMessenger.out("KEY PRESSED");
-				int kc = arg0.getKeyCode();
-				keysPressed.add(new Integer(kc));
-				if(keysPressed.contains(new Integer(17))) {
-					if(keysPressed.contains(new Integer(88))) {
-						DebugMessenger.out("Keyboard shortcut for closing triggered. Exiting now.");
-						System.exit(0);
-					}
-				}
-				
-			}
-
-			@Override
-			public void keyReleased(KeyEvent arg0) {
-				DebugMessenger.out("KEY RELEASED");
-				keysPressed.remove(new Integer(arg0.getKeyCode()));
-			}
-
-			@Override
-			public void keyTyped(KeyEvent arg0) {
-				// Empty method
-			}
-			
-		}
-		DebugMessenger.out("Assigning keyboard shortcuts.");
-		frame.addKeyListener(new CloseListener());
 		JProgressBar memBar = new JProgressBar();
 		memBar.setPreferredSize(Config.PREVIEWER_PROG_BAR_SIZE);
 		memBar.setMaximum(300);

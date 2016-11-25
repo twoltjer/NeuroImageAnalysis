@@ -90,12 +90,20 @@ public class BufferedImageContainer {
 	 *            The other BufferedImageContainer
 	 * @return true if all parts of the image containers are the same.
 	 */
-	public boolean equals(BufferedImageContainer other) {
-		return false;
+	public boolean quickEquals(BufferedImageContainer other) {
+		if(this.DM != other.DM)
+			return false;
+		if(this.indexNumber != other.indexNumber)
+			return false;
+		if(this.thresh != other.thresh)
+			return false;
+		if(this.scaled != other.scaled)
+			return false;
+		return true;
 	}
 
 	/**
-	 * Same as equals, except checks deeper properties of the objects
+	 * Same as equals, except checks deeper properties of the objects, such as file path and if it's been buffered
 	 * @param other
 	 * @return if they are the same container
 	 */
@@ -103,6 +111,8 @@ public class BufferedImageContainer {
 		if(!equals(other))
 			return false;
 		if(!this.imageFile.getAbsolutePath().equals(other.imageFile.getAbsolutePath()))
+			return false;
+		if(this.isBuffered != other.isBuffered)
 			return false;
 		return true;
 	}
@@ -119,6 +129,11 @@ public class BufferedImageContainer {
 		clone.scaled = this.scaled;
 		clone.imageFile = this.imageFile;
 		return clone;
+	}
+
+	@Override
+	public String toString() {
+		return "[DM:" + DM + ",Thresh:" + thresh + ",Index:" + indexNumber + ",Scaled:" + scaled + "]";
 	}
 }
 

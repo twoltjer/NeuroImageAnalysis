@@ -47,6 +47,16 @@ public class Config {
 	public static final int THRESH_DEFAULT = 50; // Thresh scales 0-100
 	
 	// ==========================================================================
+	// |                                 LONGS                                  |
+	// ==========================================================================
+	
+	/**
+	 * How many milliseconds between when a waiting loop should check for a new result. 
+	 * 50 equates to 20 checks per second.
+	 */
+	public static final long THREAD_LOOP_WAIT_TIME_MILLIS = 50;
+	
+	// ==========================================================================
 	// |                                STRINGS                                 |
 	// ==========================================================================
 

@@ -112,6 +112,7 @@ public class BufferManager {
 		DebugMessenger.out("Done clearing previously buffered images");
 			
 		GUIObjects.PreviewerObjects.bufferProgress.setMaximum(imagesToBuffer.size());
+		DebugMessenger.out("Beginning buffering");
 		for(int i = 0; i < imagesToBuffer.size(); i++) {
 			BufferRunner br = new BufferRunner();
 			br.bic = imagesToBuffer.get(i);
@@ -132,6 +133,7 @@ public class BufferManager {
 				Config.THRESH_DEFAULT, 0 /* index */, true);
 		RuntimeConfig.previewerDisplayImage.bufferImage();
 		RuntimeConfig.bufferedImages.add(RuntimeConfig.previewerDisplayImage);
+		RuntimeConfig.isReadyToDisplay = true;
 		/* 
 		 * Used for memory testing
 		 *  

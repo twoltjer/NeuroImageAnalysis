@@ -52,14 +52,32 @@ public class ButtonClick implements ActionListener {
 					break;
 				}
 			}
-
-			// If image index is zero, disable this button. If not, enable it.
+			RuntimeConfig.previewerDisplayImage = newDispImg;
+			BufferManager.buffer();
 		}
 		if (e.getSource().equals(GUIObjects.PreviewerObjects.prevDMButton)) {
 
 		}
 		if (e.getSource().equals(GUIObjects.PreviewerObjects.nextImgButton)) {
-
+			RuntimeConfig.isReadyToDisplay = false;
+			DebugMessenger.out("Next image button clicked");
+			BufferedImageContainer newDispImg = RuntimeConfig.previewerDisplayImage.cloneUnbuffered();
+			newDispImg.indexNumber += 1;
+			for (BufferedImageContainer bic : RuntimeConfig.bufferedImages) {
+				DebugMessenger.out("Comparing " + bic.toString() + " and " + newDispImg.toString());
+				if (bic.quickEquals(newDispImg)) {
+					newDispImg = bic;
+					DebugMessenger.out("Found new display image");
+					DebugMessenger.out("New display image is buffered: " + newDispImg.isBuffered);
+					break;
+				}
+			}
+			
+			RuntimeConfig.previewerDisplayImage = newDispImg;
+			DebugMessenger.out("Set new display image");
+			DebugMessenger.out("Set display image is buffered: " + RuntimeConfig.previewerDisplayImage.isBuffered);
+			GUIThread.updatePreviewerDispImage();
+			BufferManager.buffer();
 		}
 		if (e.getSource().equals(GUIObjects.PreviewerObjects.nextDMButton)) {
 

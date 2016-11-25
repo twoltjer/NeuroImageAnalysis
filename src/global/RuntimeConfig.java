@@ -45,6 +45,11 @@ public class RuntimeConfig {
 	 * Indicates across the program if the previewer is buffering or not
 	 */
 	public static boolean isBuffering = false;
+	/**
+	 * If the previewer is ready to display the next image, this is true.
+	 */
+	public static boolean isReadyToDisplay = true;
+
 
 	// ==========================================================================
 	// |                             USER SETTINGS                              |
