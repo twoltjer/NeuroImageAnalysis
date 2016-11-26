@@ -5,9 +5,7 @@ import java.util.ArrayList;
 
 import javax.swing.JButton;
 
-import gui.BufferManager;
 import gui.GUIObjects;
-import gui.GUIThread;
 import processing.BufferedImageContainer;
 
 /**
@@ -94,12 +92,6 @@ public class RuntimeConfig {
 	 * <b>Config.THRESH_DEFAULT</b>
 	 */
 	public static int threshold;
-	/**
-	 * The display mode number. The meaning behind this number is found in the
-	 * <b>GUIThread</b> class, which holds the <b>DM_COLOR</b>,
-	 * <b>DM_GRAYSCALE</b>, and <b>DM_MONOCHROME</b> constants
-	 */
-	public static int displayModeNumber;
 
 	public static BufferedImageContainer previewerDisplayImage;
 
@@ -168,7 +160,25 @@ public class RuntimeConfig {
 	 * @return the next DM number
 	 */
 	public static int getNextDMNumber() {
-		int nextDMNum = RuntimeConfig.displayModeNumber + 1;
+		return getNextDMNumber(RuntimeConfig.previewerDisplayImage.DM);
+	}
+
+	/**
+	 * Finds the previous DM number
+	 * 
+	 * @return the previous DM number
+	 */
+	public static int getPrevDMNumber() {
+		return getPrevDMNumber(RuntimeConfig.previewerDisplayImage.DM);
+	}
+	
+	/**
+	 * Finds the next DM number
+	 * 
+	 * @return the next DM number
+	 */
+	public static int getNextDMNumber(int inDM) {
+		int nextDMNum = inDM + 1;
 		if (!(nextDMNum - Config.PREVIEWER_DM_NAMES.length < 0)) {
 			nextDMNum -= Config.PREVIEWER_DM_NAMES.length;
 		}
@@ -180,8 +190,8 @@ public class RuntimeConfig {
 	 * 
 	 * @return the previous DM number
 	 */
-	public static int getPrevDMNumber() {
-		int prevDMNum = RuntimeConfig.displayModeNumber - 1;
+	public static int getPrevDMNumber(int inDM) {
+		int prevDMNum = inDM - 1;
 		if (prevDMNum < 0) {
 			prevDMNum += Config.PREVIEWER_DM_NAMES.length;
 		}

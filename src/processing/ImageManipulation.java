@@ -111,10 +111,10 @@ public class ImageManipulation {
 		}
 		return originalImage.getRGB(oldx, oldy);
 	}
-	
+	/*
 	private static float[] colorToHsv(Color c) {
 		return Color.RGBtoHSB(c.getRed(), c.getGreen(), c.getBlue(), null);
-	}
+	}*/
 	
 	private static float getValue(Color c) {
 		float[] hsbVals = Color.RGBtoHSB(c.getRed(), c.getGreen(), c.getBlue(), null);

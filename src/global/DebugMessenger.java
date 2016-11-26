@@ -25,10 +25,12 @@ public abstract class DebugMessenger {
 	 */
 	public static void outNoNewLine(String message) {
 		if(Config.DEBUG_OUTPUT_ENABLED) {
+			String printer = "";
 			if(lastOutWasNewLine) {
-				System.out.print("DEBUG: ");
+				printer += "DEBUG: ";
 			}
-			System.out.print(message);
+			printer += message;
+			System.out.print(printer);
 		}
 		lastOutWasNewLine = false;
 	}

@@ -44,12 +44,17 @@ public class BufferedImageContainer {
 				int minSize = Config.PREVIEWER_IMAGE_MIN_SIZE.height * Config.PREVIEWER_IMAGE_MIN_SIZE.width;
 				int maxSize = Config.PREVIEWER_IMAGE_MAX_SIZE.height * Config.PREVIEWER_IMAGE_MAX_SIZE.width;
 				if(imageSize < minSize) {
+					convertImage();
 					image = ImageManipulation.scaleUp(image, minSize);
 				} else if(imageSize > maxSize){
 					image = ImageManipulation.scaleDown(image, maxSize);
+					convertImage();
 				}
-
+				
+			} else {
+				convertImage();
 			}
+			
 			DebugMessenger.out("Done reading image");
 		} catch (IOException e) {
 			DebugMessenger.out("There was a problem reading the image. Check that the image is a format that works.");
@@ -129,6 +134,20 @@ public class BufferedImageContainer {
 		clone.scaled = this.scaled;
 		clone.imageFile = this.imageFile;
 		return clone;
+	}
+	
+	/**
+	 * Converts the image to the right DM. 
+	 */
+	private void convertImage() {
+		if(this.DM != DM_COLOR) {
+			// Convert to grayscale
+			image = ImageManipulation.convertFromColorToGrayscale(image);
+			if(this.DM == DM_MONOCHROME) {
+				// Convert to monochrome as well
+				image = ImageManipulation.applyThreshold(image, thresh);
+			}
+		}
 	}
 
 	@Override

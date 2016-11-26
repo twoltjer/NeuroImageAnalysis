@@ -36,10 +36,10 @@ public class BufferManager {
 		//GUIThread disableButtonThread = new GUIThread();
 		//disableButtonThread.startThread(GUIThread.DISABLE_PREVIEWER_BUTTONS);
 		
-
 		BufferedImageContainer dispImage = RuntimeConfig.previewerDisplayImage;
 
 		// Set images to buffer
+		DebugMessenger.out("Getting button info from " + dispImage.toString());
 		BUFFER_COLOR = true;
 		BUFFER_GRAYSCALE = true;
 		BUFFER_MONOCHROME = true;
@@ -48,7 +48,11 @@ public class BufferManager {
 		BUFFER_LG_INC = dispImage.thresh <= 100 - Config.THRESH_CHANGE_LG_AMOUNT;
 		BUFFER_SM_INC = dispImage.thresh <= 100 - Config.THRESH_CHANGE_SM_AMOUNT;
 		BUFFER_PREV = (dispImage.indexNumber > 0);
+		DebugMessenger.out("BUFFER_PREV is " + BUFFER_PREV);
 		BUFFER_NEXT = (dispImage.indexNumber < (RuntimeConfig.imageFiles.size() - 1));
+		
+		GUIThread buttonSettingThread = new GUIThread();
+		buttonSettingThread.startThread(GUIThread.PREVIEWER_BUTTON_UPDATE);
 		
 		// create list of new images to buffer
 		ArrayList<BufferedImageContainer> imagesToBuffer = new ArrayList<BufferedImageContainer>();

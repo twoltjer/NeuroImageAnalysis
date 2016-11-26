@@ -34,6 +34,7 @@ import global.RuntimeConfig;
 		public static final int LAUNCH_IMAGE_PREVIEWER = 1;
 		public static final int MEMORY_USAGE_WINDOW = 2;
 		public static final int PREVIEWER_FOCUS = 3;
+		public static final int PREVIEWER_BUTTON_UPDATE = 4;
 		private int guiNumber;
 		
 		// ==========================================================================
@@ -69,6 +70,8 @@ import global.RuntimeConfig;
 				createMemoryUsageWindow();
 			if (guiNumber == GUIThread.PREVIEWER_FOCUS)
 				runPreviewerFocusLoop();
+			if (guiNumber == GUIThread.PREVIEWER_BUTTON_UPDATE)
+				updatePreviewerButtons();
 		}
 	
 	// ==========================================================================
@@ -99,7 +102,6 @@ import global.RuntimeConfig;
 		} else {
 			DebugMessenger.out("Chooser hub doesn't exist, so skipping destruction.");
 		}
-		
 	}
 
 	/**
@@ -202,8 +204,17 @@ import global.RuntimeConfig;
 		BufferManager.buffer();
 	}
 	
+	/**
+	 * Removes the chooser hub from view, then memory.
+	 */
+	public void destroyPreviewer() {
+		DebugMessenger.out("Destroying previewer");
+		GUIObjects.PreviewerObjects.previewFrame.setVisible(false);
+		GUIObjects.PreviewerObjects.previewFrame.dispose();
+		DebugMessenger.out("Previewer destroyed");
+	}
+	
 	private void setDefaultPreviewerVars() {
-		RuntimeConfig.displayModeNumber = RuntimeConfig.previewerDisplayImage.DM;
 		RuntimeConfig.threshold = RuntimeConfig.previewerDisplayImage.thresh;
 		RuntimeConfig.isBuffering = true;
 	}
@@ -430,7 +441,8 @@ import global.RuntimeConfig;
 
 	private void runPreviewerFocusLoop() {
 		while(true) {
-			if(!GUIObjects.PreviewerObjects.previewFrame.hasFocus()) {
+			
+			if(GUIObjects.PreviewerObjects.previewFrame.isActive() && !GUIObjects.PreviewerObjects.previewFrame.hasFocus()) {
 				DebugMessenger.out("Resetting focus to previewer frame");
 				GUIObjects.PreviewerObjects.previewFrame.requestFocus();
 			} else {
@@ -467,7 +479,7 @@ import global.RuntimeConfig;
 	public JButton[] getPreviewerButtons() {
 		DebugMessenger.out("Getting list of previewer buttons");
 		JButton[] buttons = { GUIObjects.PreviewerObjects.prevDMButton, 
-				GUIObjects.PreviewerObjects.prevDMButton,
+				GUIObjects.PreviewerObjects.prevImgButton,
 				GUIObjects.PreviewerObjects.nextImgButton, 
 				GUIObjects.PreviewerObjects.nextDMButton, 
 				GUIObjects.PreviewerObjects.cancelButton, 
@@ -494,21 +506,25 @@ import global.RuntimeConfig;
 	public static void updatePreviewerDispImage() {
 		GUIObjects.PreviewerObjects.previewFrame.setVisible(false);
 		GUIObjects.PreviewerObjects.imagePanel.removeAll();
-		/*
-		while(!RuntimeConfig.isReadyToDisplay) {
-			try {
-				DebugMessenger.out("Continue waiting for image to be ready");
-				Thread.sleep(50);
-			} catch (InterruptedException e) {
-				DebugMessenger.out("ERROR: Thread failed to sleep for 50 millis");
-				System.exit(-1);
-			}
-		} */
 		GUIObjects.PreviewerObjects.imagePanel.add(new JLabel(new ImageIcon(RuntimeConfig.previewerDisplayImage.image)));
 		GUIObjects.PreviewerObjects.previewFrame.pack();
 		GUIObjects.PreviewerObjects.previewFrame.setVisible(true);
 	}
 
+	public static void updatePreviewerButtons() {
+		DebugMessenger.out("Setting buttons");
+		GUIObjects.PreviewerObjects.decLgButton.setEnabled(BufferManager.BUFFER_LG_DEC);
+		GUIObjects.PreviewerObjects.decSmButton.setEnabled(BufferManager.BUFFER_SM_DEC);
+		GUIObjects.PreviewerObjects.incLgButton.setEnabled(BufferManager.BUFFER_LG_INC);
+		GUIObjects.PreviewerObjects.incSmButton.setEnabled(BufferManager.BUFFER_SM_INC);
+		GUIObjects.PreviewerObjects.nextImgButton.setEnabled(BufferManager.BUFFER_NEXT);
+		GUIObjects.PreviewerObjects.prevImgButton.setEnabled(BufferManager.BUFFER_PREV);
+		GUIObjects.PreviewerObjects.prevDMButton.setText(Config.PREVIEWER_DM_NAMES[RuntimeConfig.getPrevDMNumber()]);
+		GUIObjects.PreviewerObjects.nextDMButton.setText(Config.PREVIEWER_DM_NAMES[RuntimeConfig.getNextDMNumber()]);
+		DebugMessenger.out("Previous image button is enabled: " + BufferManager.BUFFER_PREV);
+		GUIObjects.PreviewerObjects.threshBotLabel.setText(Integer.toString(RuntimeConfig.previewerDisplayImage.thresh));
+		DebugMessenger.out("Done setting buttons");
+	}
 	
 	// ==========================================================================
 	// |                              MEMORY USAGE                              |
