@@ -96,6 +96,8 @@ public class RuntimeConfig {
 	public static BufferedImageContainer previewerDisplayImage;
 
 	public static ArrayList<BufferedImageContainer> bufferedImages = new ArrayList<BufferedImageContainer>();
+	
+	public static ArrayList<JButton> tempDisabledPreviewerButtons = new ArrayList<JButton>();
 
 	// ==========================================================================
 	// |                                 METHODS                                |
@@ -197,16 +199,4 @@ public class RuntimeConfig {
 		}
 		return prevDMNum;
 	}
-
-	/**
-	 * Gets a String status based on the settings of variables in this class
-	 * 
-	 * @return the status of the program, in String form
-	 */
-	public static String getStatus() {
-		if (RuntimeConfig.isBuffering)
-			return "Buffering..";
-		return "Ready";
-	}
-	
 }

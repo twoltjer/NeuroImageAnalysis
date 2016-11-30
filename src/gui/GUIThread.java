@@ -237,7 +237,7 @@ import global.RuntimeConfig;
 		GUIObjects.PreviewerObjects.previewFrame = new JFrame(Config.PROGRAM_NAME);
 		GUIObjects.PreviewerObjects.prevImgButton = new JButton(Config.PREVIEWER_PREV_BUTTON_TEXT);
 		GUIObjects.PreviewerObjects.rightButtonPanel = new JPanel();
-		GUIObjects.PreviewerObjects.statusLabel = new JLabel(RuntimeConfig.getStatus());
+		GUIObjects.PreviewerObjects.statusLabel = new JLabel("Buffering...");
 		GUIObjects.PreviewerObjects.threshBotLabel = new JLabel(Integer.toString(RuntimeConfig.threshold));
 		GUIObjects.PreviewerObjects.threshDisplayPanel = new JPanel();
 		GUIObjects.PreviewerObjects.threshTopLabel = new JLabel(Config.PREVIEWER_THRESH_LABEL_TOP_TEXT);
@@ -471,6 +471,8 @@ import global.RuntimeConfig;
 		DebugMessenger.out("Disabling previewer buttons");
 		JButton[] buttons = getPreviewerButtons();
 		for(JButton jb : buttons) {
+			if(jb.isEnabled()) 
+				RuntimeConfig.tempDisabledPreviewerButtons.add(jb);
 			jb.setEnabled(false);
 		}
 		DebugMessenger.out("Done disabling previewer buttons");
@@ -495,12 +497,17 @@ import global.RuntimeConfig;
 		// Maximum is set by BufferManager.buffer() method
 		int value = RuntimeConfig.bufferedImages.size();
 		GUIObjects.PreviewerObjects.bufferProgress.setValue(value);
-		if(value == GUIObjects.PreviewerObjects.bufferProgress.getMaximum()) {
-			RuntimeConfig.isBuffering = false;
-		}
+
 		GUIObjects.PreviewerObjects.bufferProgress.setString("Buffering " + value + "/" + GUIObjects.PreviewerObjects.bufferProgress.getMaximum());
 		GUIObjects.PreviewerObjects.bufferProgress.setStringPainted(true);
-		
+		if(value == GUIObjects.PreviewerObjects.bufferProgress.getMaximum()) {
+			RuntimeConfig.isBuffering = false;
+			GUIObjects.PreviewerObjects.statusLabel.setText("Buffering complete");
+			for(JButton jb : RuntimeConfig.tempDisabledPreviewerButtons) {
+				jb.setEnabled(true);
+			}
+			RuntimeConfig.tempDisabledPreviewerButtons.clear();
+		}
 	}
 	
 	public static void updatePreviewerDispImage() {

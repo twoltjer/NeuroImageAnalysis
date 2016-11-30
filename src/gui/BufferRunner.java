@@ -22,7 +22,5 @@ public class BufferRunner extends Thread {
 		DebugMessenger.out("(" + thread_id + ") Index = " + bic.indexNumber);
 		DebugMessenger.out("(" + thread_id + ") DM = " + bic.DM);
 		DebugMessenger.out("(" + thread_id + ") Thresh = " + bic.thresh);
-		
-		
 	}
 }

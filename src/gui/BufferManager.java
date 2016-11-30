@@ -53,7 +53,8 @@ public class BufferManager {
 		
 		GUIThread buttonSettingThread = new GUIThread();
 		buttonSettingThread.startThread(GUIThread.PREVIEWER_BUTTON_UPDATE);
-		
+		buttonSettingThread.disablePreviewerButtons();
+		GUIObjects.PreviewerObjects.statusLabel.setText("Buffering...");
 		// create list of new images to buffer
 		ArrayList<BufferedImageContainer> imagesToBuffer = new ArrayList<BufferedImageContainer>();
 		if(BUFFER_COLOR) {
@@ -83,7 +84,8 @@ public class BufferManager {
 		if(BUFFER_NEXT) {
 			imagesToBuffer.add(new BufferedImageContainer(dispImage.DM, dispImage.thresh, dispImage.indexNumber + 1, true));
 		}
-		
+
+		//GUIThread.updateBufferProgBar();
 		/* TODO: Optimize buffering by keeping some images
 		// Check already buffered images for matches. If they don't match, remove them
 		ArrayList<Integer> indecesToRemove = new ArrayList<Integer>();
