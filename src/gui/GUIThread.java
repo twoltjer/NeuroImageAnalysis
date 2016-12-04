@@ -2,17 +2,16 @@
 
 package gui;
 
-import java.awt.Color;
 import java.awt.Container;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
@@ -26,8 +25,7 @@ import javax.swing.JTextArea;
 import global.Config;
 import global.DebugMessenger;
 import global.RuntimeConfig;
-import processing.BufferedImageContainer;
-import processing.ImageManipulation;
+import processing.ProcThread;
 
 /**
  * Thread that starts the GUI, and contains and runs GUI methods.
@@ -42,6 +40,7 @@ import processing.ImageManipulation;
 		public static final int PREVIEWER_BUTTON_UPDATE = 4;
 		public static final int PREVIEWER_CHOOSE_FOREGROUND = 5;
 		public static final int PREVIEWER_CHOOSE_BACKGROUND = 6;
+		public static final int START_SCAN_WINDOW = 7;
 		private int guiNumber;
 		
 		// ==========================================================================
@@ -83,7 +82,8 @@ import processing.ImageManipulation;
 				previewerPickForegroundColor();
 			if (guiNumber == GUIThread.PREVIEWER_CHOOSE_BACKGROUND)
 				previewerPickBackgroundColor();
-		
+			if (guiNumber == GUIThread.START_SCAN_WINDOW)
+				createScanningProgWindowAndScan();
 		}
 	
 	// ==========================================================================
@@ -460,7 +460,7 @@ import processing.ImageManipulation;
 	}
 
 	private void runPreviewerFocusLoop() {
-		while(true) {
+		while(RuntimeConfig.continuePreviewerFocusLoop) {
 			
 			if(GUIObjects.PreviewerObjects.previewFrame.isActive() && !GUIObjects.PreviewerObjects.previewFrame.hasFocus()) {
 				DebugMessenger.out("Resetting focus to previewer frame");
@@ -597,43 +597,54 @@ import processing.ImageManipulation;
 		}
 	}
 	
-	public void createScanningProgWindowAndScan() {
+	private void createScanningProgWindowAndScan() {
 		DebugMessenger.out("Creating scanning progress window");
 		JFrame frame = new JFrame(Config.PROGRAM_NAME);
-		JProgressBar progress = new JProgressBar();
-		progress.setPreferredSize(Config.PREVIEWER_PROG_BAR_SIZE);
-		progress.setMaximum(RuntimeConfig.imageFiles.size());
-		frame.add(progress);
+		GUIObjects.scanProgressBar.setPreferredSize(Config.PREVIEWER_PROG_BAR_SIZE);
+		GUIObjects.scanProgressBar.setMaximum(RuntimeConfig.imageFiles.size() * (100 / Config.OUTPUT_FILE_THRESHOLD_INC));
+		frame.add(GUIObjects.scanProgressBar);
+		GUIObjects.scanProgressBar.setStringPainted(true);
+		GUIObjects.scanProgressBar.setVisible(true);
 		frame.pack();
 		frame.setVisible(true);
-		PrintWriter outFileWriter = null;
-		try {
-			outFileWriter = new PrintWriter(RuntimeConfig.outputFile);
-		} catch (FileNotFoundException e) {
-			DebugMessenger.out("Something went wrong with creating an output file");
-			e.printStackTrace();
-		}
-		outFileWriter.print("Threshold,");
-		for(int i = 0; i < 100; i += Config.OUTPUT_FILE_THRESHOLD_INC) {
-			outFileWriter.print(i + ",");
-		}
-		outFileWriter.println("100;");
-		for(int imgNum = 0; imgNum < RuntimeConfig.imageFiles.size(); imgNum++) {
-			outFileWriter.print(RuntimeConfig.imageFiles.get(imgNum).getName());
-			for(int thresh = 0; thresh <= 100; thresh += Config.OUTPUT_FILE_THRESHOLD_INC) {
-				BufferedImageContainer bic = new BufferedImageContainer(BufferedImageContainer.DM_MONOCHROME, thresh, imgNum, false);
-				bic.bufferImage();
-				ImageManipulation.countPositive(Color.BLACK, bic.image);
-				bic.unbufferImage();
-				
+		ProcThread pt = new ProcThread();
+		pt.start();
+		while(RuntimeConfig.isScanningImages) {
+			updateScanProgress();
+			try {
+				Thread.sleep(Config.THREAD_LOOP_WAIT_TIME_MILLIS);
+			} catch (InterruptedException e) {
+				DebugMessenger.out("There was a problem sleeping the thread in the scan prog window refreshing method");
 			}
 		}
+		frame.setVisible(false);
+		frame.dispose();
+		createScanningFinishedWindow();
 	}
 	
-	public void createScanningFinishedWindow() {
-		
+	private static void updateScanProgress() {
+		DebugMessenger.out("Refreshing prog bar");
+		int newProgValue = ProcThread.scannedImagesCount;
+		GUIObjects.scanProgressBar.setValue(newProgValue);
+		if(newProgValue > GUIObjects.scanProgressBar.getMaximum())
+			DebugMessenger.out("Error: Requesting to display " + newProgValue + " of " + GUIObjects.scanProgressBar.getMaximum());
 	}
-	
+	private static void createScanningFinishedWindow() {
+		JFrame finishWin = new JFrame(Config.PROGRAM_NAME);
+		JButton finishButton = new JButton("<html>Processing complete! Data written to:<br>"
+				+ RuntimeConfig.outputFile.getAbsolutePath() + "<p>Click this button to exit</html>");
+		class FinishButtonClick implements ActionListener {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				System.exit(0);
+			}
+		}
+		finishButton.addActionListener(new FinishButtonClick());
+		finishWin.add(finishButton);
+		finishWin.pack();
+		finishWin.setVisible(true);
+	}
+
 	// ==========================================================================
 	// |                              GENERAL CODE                              |
 	// ==========================================================================

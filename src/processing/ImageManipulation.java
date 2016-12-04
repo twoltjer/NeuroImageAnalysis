@@ -176,8 +176,8 @@ public class ImageManipulation {
 					posPix += 1;
 			}
 		}
-		float rtn = posPix/totalPix;
-		DebugMessenger.out("Pixel count complete. Returns value of " + rtn);
+		float rtn = ((float)posPix)/((float)totalPix);
+		DebugMessenger.out("Pixel count complete. " + posPix + "/" + totalPix + "   Returns value of " + rtn);
 		return rtn;
 	}
 }

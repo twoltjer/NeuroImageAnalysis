@@ -1,6 +1,9 @@
 package gui;
 
-import gui.guiobjectsets.*;
+import javax.swing.JProgressBar;
+
+import gui.guiobjectsets.ChooserHubObjectSet;
+import gui.guiobjectsets.PreviewerObjectSet;
 
 /**
  * Class to contain GUI object sets. Having the GUI objects in different
@@ -19,5 +22,5 @@ public abstract class GUIObjects {
 	 */
 	public static PreviewerObjectSet PreviewerObjects = new PreviewerObjectSet();
 	
-
+	public static JProgressBar scanProgressBar = new JProgressBar();
 }

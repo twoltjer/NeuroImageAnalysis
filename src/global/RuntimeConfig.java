@@ -49,6 +49,11 @@ public class RuntimeConfig {
 	 */
 	public static boolean isReadyToDisplay = true;
 
+	public static boolean continuePreviewerFocusLoop = true;
+
+	public static boolean isScanningImages = true;
+
+	
 
 	// ==========================================================================
 	// |                             USER SETTINGS                              |

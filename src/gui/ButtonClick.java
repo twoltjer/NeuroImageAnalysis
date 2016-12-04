@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 import global.Config;
 import global.DebugMessenger;
@@ -36,6 +37,8 @@ public class ButtonClick implements ActionListener {
 		}
 		if (e.getSource().equals(GUIObjects.ChooserObjects.chooserHubScanButton)) {
 			DebugMessenger.out("Scan button clicked");
+			DebugMessenger.out("Setting output file");
+			RuntimeConfig.outputFile = new File(RuntimeConfig.outputFileDir, GUIObjects.ChooserObjects.outputFileNameTextArea.getText());
 			DebugMessenger.out("Reading image directory for images");
 			Preprocessing.readImageDirectory();
 			DebugMessenger.out("Creating GUIThread for previewer");
@@ -225,7 +228,11 @@ public class ButtonClick implements ActionListener {
 			bgThread.startThread(GUIThread.PREVIEWER_CHOOSE_BACKGROUND);
 			}
 		if (e.getSource().equals(GUIObjects.PreviewerObjects.analyzeButton)) {
-
+			GUIObjects.PreviewerObjects.previewFrame.setVisible(false);
+			RuntimeConfig.continuePreviewerFocusLoop = false;
+			GUIObjects.PreviewerObjects.previewFrame.dispose();
+			GUIThread gt = new GUIThread();
+			gt.startThread(GUIThread.START_SCAN_WINDOW);
 		}
 
 	}
