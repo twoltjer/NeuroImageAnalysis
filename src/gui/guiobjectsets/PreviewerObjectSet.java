@@ -66,6 +66,14 @@ public class PreviewerObjectSet {
 	 */
 	public JButton nextDMButton;
 	/**
+	 * Lets user choose foreground color
+	 */
+	public JButton pickForegroundButton;
+	/**
+	 * Lets user choose background color
+	 */
+	public JButton pickBackgroundButton;
+	/**
 	 * Cancels the preview window
 	 */
 	public JButton cancelButton;

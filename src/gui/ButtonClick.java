@@ -214,6 +214,16 @@ public class ButtonClick implements ActionListener {
 			GUIThread.updatePreviewerDispImage();
 			BufferManager.buffer();
 		}
+		if (e.getSource().equals(GUIObjects.PreviewerObjects.pickForegroundButton)) {
+			DebugMessenger.out("Foreground picker button clicked");
+			GUIThread fgThread = new GUIThread();
+			fgThread.startThread(GUIThread.PREVIEWER_CHOOSE_FOREGROUND);
+			}
+		if (e.getSource().equals(GUIObjects.PreviewerObjects.pickBackgroundButton)) {
+			DebugMessenger.out("Background picker button clicked");
+			GUIThread bgThread = new GUIThread();
+			bgThread.startThread(GUIThread.PREVIEWER_CHOOSE_BACKGROUND);
+			}
 		if (e.getSource().equals(GUIObjects.PreviewerObjects.analyzeButton)) {
 
 		}

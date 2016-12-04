@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import global.Config;
+import global.DebugMessenger;
 import global.RuntimeConfig;
 import gui.GUIObjects;
 import gui.GUIThread;
@@ -39,7 +40,6 @@ public class TestPreviewer {
 		testThread.startThread(GUIThread.LAUNCH_IMAGE_PREVIEWER);
 		// Can't go back to anything. So deactivate this button that is supposed
 		// to take the user back to the chooser hub.
-		boolean success = false;
 		while (true) {
 			try {
 				GUIObjects.PreviewerObjects.cancelButton.setEnabled(false);
@@ -47,8 +47,8 @@ public class TestPreviewer {
 					break;
 				}
 			} catch (NullPointerException e) {
+				DebugMessenger.out("Cancel button not ready, waiting to cancel.");
 				Thread.sleep(Config.THREAD_LOOP_WAIT_TIME_MILLIS);
-				e.printStackTrace();
 			}
 		}
 	}

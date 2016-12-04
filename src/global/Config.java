@@ -44,7 +44,11 @@ public class Config {
 	/**
 	 * Default threshold value
 	 */
-	public static final int THRESH_DEFAULT = 50; // Thresh scales 0-100
+	public static final int THRESH_DEFAULT = 70; // Thresh scales 0-100
+	/**
+	 * Output file threshold increment
+	 */
+	public static final int OUTPUT_FILE_THRESHOLD_INC = 2;
 	
 	// ==========================================================================
 	// |                                 LONGS                                  |
@@ -105,6 +109,12 @@ public class Config {
 	
 	public static final String PREVIEWER_PREV_BUTTON_TEXT = "Previous Image";
 	
+	public static final String PREVIEWER_BACKGROUND_CHOOSER_BUTTON_TEXT = "Choose background color";
+	
+	public static final String PREVIEWER_FOREGROUND_CHOOSER_BUTTON_TEXT = "Choose foreground color";
+	
+	
+	
 	public static final String PREVIEWER_THRESH_LABEL_TOP_TEXT = "Thresh:";
 	
 	// ==========================================================================
@@ -132,9 +142,9 @@ public class Config {
 
 	public static final Dimension PREVIEWER_PROG_BAR_SIZE = new Dimension(460, 78);
 	
-	public static final Dimension PREVIEWER_IMAGE_MIN_SIZE = new Dimension(300, 200);
+	public static final Dimension PREVIEWER_IMAGE_MIN_SIZE = new Dimension(600, 400);
 	
-	public static final Dimension PREVIEWER_IMAGE_MAX_SIZE = new Dimension(600, 400);
+	public static final Dimension PREVIEWER_IMAGE_MAX_SIZE = new Dimension(1200, 800);
 	
 	
 }

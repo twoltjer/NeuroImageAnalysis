@@ -1,5 +1,6 @@
 package global;
 
+import java.awt.Color;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -92,6 +93,10 @@ public class RuntimeConfig {
 	 * <b>Config.THRESH_DEFAULT</b>
 	 */
 	public static int threshold;
+	
+	public static Color foreground = Color.BLACK;
+	
+	public static Color background = Color.WHITE;
 
 	public static BufferedImageContainer previewerDisplayImage;
 

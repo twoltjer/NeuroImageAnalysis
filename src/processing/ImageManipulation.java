@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
 import global.DebugMessenger;
+import gui.GUIObjects;
 
 public class ImageManipulation {
 	public static BufferedImage scaleDown(BufferedImage image, int maxSize) {
@@ -54,6 +55,7 @@ public class ImageManipulation {
 	 * @return The grayscale image
 	 */
 	public static BufferedImage convertFromColorToGrayscale(BufferedImage colorImage) {
+		
 		BufferedImage image = new BufferedImage(colorImage.getWidth(), colorImage.getHeight(),  
 			    BufferedImage.TYPE_BYTE_GRAY);  
 			Graphics g = image.getGraphics();  
@@ -62,12 +64,14 @@ public class ImageManipulation {
 		return image;
 	}
 	
-	public static BufferedImage applyThreshold(BufferedImage grayscale, int threshold) {
+	public static BufferedImage applyThreshold(BufferedImage grayscale, BufferedImage color, int threshold) {
 		int height = grayscale.getHeight();
 		int width = grayscale.getWidth();
-		BufferedImage mono = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
+		BufferedImage mono = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
+				//TODO: Here's original code. It was replaced with tooBlue code
+				/*
 				Color origColor = new Color(grayscale.getRGB(x, y));
 				float fThresh = (float) (((double) threshold) / 100 );
 				float colorV = getValue(origColor);
@@ -75,8 +79,36 @@ public class ImageManipulation {
 					mono.setRGB(x, y, Color.WHITE.getRGB());
 				} else {
 					mono.setRGB(x, y, Color.BLACK.getRGB());
+				} 
+				*/
+				Color origColor = new Color(grayscale.getRGB(x, y));
+				boolean tooBlue = false;
+				float h = colorToHsv(new Color(color.getRGB(x, y)))[0];
+				float s = colorToHsv(new Color(color.getRGB(x, y)))[1];
+				if(x == 140) {
+					if(y == 202) {
+						System.out.println("HUE: " + h);
+					}
+				}
+				if((h > (0.5)) && (h < (0.9)) && (s > 0.25))
+					tooBlue = true;
+				float fThresh = (float) (((double) threshold) / 100 );
+				float colorV = getValue(origColor);
+				if(fThresh < colorV) {
+					mono.setRGB(x, y, Color.WHITE.getRGB());
+				} else {
+					mono.setRGB(x, y, Color.BLACK.getRGB());
+					if(tooBlue) {
+						if(GUIObjects.PreviewerObjects.previewFrame.isVisible()) {
+							mono.setRGB(x, y, Color.BLUE.getRGB());
+						} else {
+							mono.setRGB(x, y, Color.WHITE.getRGB());
+						}
+						
+					}
 				}
 			}
+				
 		}
 		return mono;
 	}
@@ -86,16 +118,18 @@ public class ImageManipulation {
 	}
 	
 	private static int getScaledImageRGBForScaleDown(int newx, int newy, int dimensionDivisor, BufferedImage originalImage) {
-		int oldx = newx * dimensionDivisor;
+		int oldx = newx * dimensionDivisor * 2;
+		//System.out.println("DIM DIV " + dimensionDivisor);
 		int imageWidth = originalImage.getWidth();
 		while(oldx > imageWidth) {
 			oldx--;
 		}
-		int oldy = newy * dimensionDivisor;
+		int oldy = newy * dimensionDivisor * 2;
 		int imageHeight = originalImage.getHeight();
 		while(oldy > imageHeight) {
 			oldy--;
 		}
+		//System.out.println("Querying for color of (" + newx + "," + newy + ") to be asked from (" + oldx + "," + oldy + ")");
 		return originalImage.getRGB(oldx, oldy);
 	}
 	private static int getScaledImageRGBForScaleUp(int newx, int newy, int dimensionMultiplier, BufferedImage originalImage) {
@@ -111,10 +145,12 @@ public class ImageManipulation {
 		}
 		return originalImage.getRGB(oldx, oldy);
 	}
-	/*
+	
 	private static float[] colorToHsv(Color c) {
 		return Color.RGBtoHSB(c.getRed(), c.getGreen(), c.getBlue(), null);
-	}*/
+		//TODO: Hue is returning 0. Find out why.
+		// Know why: We're converting to grayscale and then measuring hue
+	}
 	
 	private static float getValue(Color c) {
 		float[] hsbVals = Color.RGBtoHSB(c.getRed(), c.getGreen(), c.getBlue(), null);
@@ -123,5 +159,25 @@ public class ImageManipulation {
 	
 	public static float getValueTestAccessor(Color c) {
 		return getValue(c);
+	}
+	
+	public static float getHueTestAccessor(Color c) {
+		return Color.RGBtoHSB(c.getRed(), c.getGreen(), c.getBlue(), null)[0];
+	}
+
+	public static float countPositive(Color posColor, BufferedImage image) {
+		DebugMessenger.out("Starting pixel count...");
+		int totalPix = 0;
+		int posPix = 0;
+		for(int y = 0; y < image.getHeight(); y++) {
+			for(int x = 0; x < image.getWidth(); x++) {
+				totalPix += 1;
+				if(posColor.getRGB() == image.getRGB(x, y))
+					posPix += 1;
+			}
+		}
+		float rtn = posPix/totalPix;
+		DebugMessenger.out("Pixel count complete. Returns value of " + rtn);
+		return rtn;
 	}
 }

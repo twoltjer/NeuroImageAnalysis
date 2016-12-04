@@ -2,6 +2,7 @@
 
 package gui;
 
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
@@ -10,6 +11,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
@@ -23,6 +26,8 @@ import javax.swing.JTextArea;
 import global.Config;
 import global.DebugMessenger;
 import global.RuntimeConfig;
+import processing.BufferedImageContainer;
+import processing.ImageManipulation;
 
 /**
  * Thread that starts the GUI, and contains and runs GUI methods.
@@ -35,6 +40,8 @@ import global.RuntimeConfig;
 		public static final int MEMORY_USAGE_WINDOW = 2;
 		public static final int PREVIEWER_FOCUS = 3;
 		public static final int PREVIEWER_BUTTON_UPDATE = 4;
+		public static final int PREVIEWER_CHOOSE_FOREGROUND = 5;
+		public static final int PREVIEWER_CHOOSE_BACKGROUND = 6;
 		private int guiNumber;
 		
 		// ==========================================================================
@@ -72,6 +79,11 @@ import global.RuntimeConfig;
 				runPreviewerFocusLoop();
 			if (guiNumber == GUIThread.PREVIEWER_BUTTON_UPDATE)
 				updatePreviewerButtons();
+			if (guiNumber == GUIThread.PREVIEWER_CHOOSE_FOREGROUND)
+				previewerPickForegroundColor();
+			if (guiNumber == GUIThread.PREVIEWER_CHOOSE_BACKGROUND)
+				previewerPickBackgroundColor();
+		
 		}
 	
 	// ==========================================================================
@@ -232,6 +244,8 @@ import global.RuntimeConfig;
 		GUIObjects.PreviewerObjects.incSmButton = new JButton(Config.PREVIEWER_INC_PREFIX + Config.THRESH_CHANGE_SM_AMOUNT);
 		GUIObjects.PreviewerObjects.leftButtonPanel = new JPanel();
 		GUIObjects.PreviewerObjects.nextDMButton = new JButton(Config.PREVIEWER_DM_NAMES[RuntimeConfig.getNextDMNumber()]);
+		GUIObjects.PreviewerObjects.pickBackgroundButton = new JButton(Config.PREVIEWER_BACKGROUND_CHOOSER_BUTTON_TEXT);
+		GUIObjects.PreviewerObjects.pickForegroundButton = new JButton(Config.PREVIEWER_FOREGROUND_CHOOSER_BUTTON_TEXT);
 		GUIObjects.PreviewerObjects.nextImgButton = new JButton(Config.PREVIEWER_NEXT_BUTTON_TEXT);
 		GUIObjects.PreviewerObjects.prevDMButton = new JButton(Config.PREVIEWER_DM_NAMES[RuntimeConfig.getPrevDMNumber()]);
 		GUIObjects.PreviewerObjects.previewFrame = new JFrame(Config.PROGRAM_NAME);
@@ -324,6 +338,9 @@ import global.RuntimeConfig;
 		c.gridy = 1;
 		GUIObjects.PreviewerObjects.prevDMButton.setPreferredSize(Config.PREVIEWER_LARGE_BUTTON_SIZE);
 		GUIObjects.PreviewerObjects.leftButtonPanel.add(GUIObjects.PreviewerObjects.prevDMButton, c);
+		c.gridy = 2;
+		GUIObjects.PreviewerObjects.pickBackgroundButton.setPreferredSize(Config.PREVIEWER_LARGE_BUTTON_SIZE);
+		GUIObjects.PreviewerObjects.leftButtonPanel.add(GUIObjects.PreviewerObjects.pickBackgroundButton, c);
 		DebugMessenger.out("Done setting up top left panel");
 	}
 
@@ -346,6 +363,9 @@ import global.RuntimeConfig;
 		c.gridy = 1;
 		GUIObjects.PreviewerObjects.nextDMButton.setPreferredSize(Config.PREVIEWER_LARGE_BUTTON_SIZE);
 		GUIObjects.PreviewerObjects.rightButtonPanel.add(GUIObjects.PreviewerObjects.nextDMButton, c);
+		c.gridy = 2;
+		GUIObjects.PreviewerObjects.pickForegroundButton.setPreferredSize(Config.PREVIEWER_LARGE_BUTTON_SIZE);
+		GUIObjects.PreviewerObjects.rightButtonPanel.add(GUIObjects.PreviewerObjects.pickForegroundButton, c);
 		DebugMessenger.out("Done setting up top right panel");
 	}
 
@@ -484,6 +504,8 @@ import global.RuntimeConfig;
 				GUIObjects.PreviewerObjects.prevImgButton,
 				GUIObjects.PreviewerObjects.nextImgButton, 
 				GUIObjects.PreviewerObjects.nextDMButton, 
+				GUIObjects.PreviewerObjects.pickForegroundButton,
+				GUIObjects.PreviewerObjects.pickBackgroundButton,
 				GUIObjects.PreviewerObjects.cancelButton, 
 				GUIObjects.PreviewerObjects.decLgButton, 
 				GUIObjects.PreviewerObjects.decSmButton, 
@@ -493,6 +515,14 @@ import global.RuntimeConfig;
 		return buttons;
 	}
 
+	public void previewerPickForegroundColor() {
+		System.out.println("Hello duck");
+	}
+	
+	public void previewerPickBackgroundColor() {
+		System.out.println("Hello duck duck");
+	}
+	
 	public static void updateBufferProgBar() {
 		// Maximum is set by BufferManager.buffer() method
 		int value = RuntimeConfig.bufferedImages.size();
@@ -502,7 +532,7 @@ import global.RuntimeConfig;
 		GUIObjects.PreviewerObjects.bufferProgress.setStringPainted(true);
 		if(value == GUIObjects.PreviewerObjects.bufferProgress.getMaximum()) {
 			RuntimeConfig.isBuffering = false;
-			GUIObjects.PreviewerObjects.statusLabel.setText("Buffering complete");
+			GUIObjects.PreviewerObjects.statusLabel.setText("<html>Buffering complete: <br>" + RuntimeConfig.previewerDisplayImage.imageFile.getName() + "</html>");
 			for(JButton jb : RuntimeConfig.tempDisabledPreviewerButtons) {
 				jb.setEnabled(true);
 			}
@@ -528,6 +558,8 @@ import global.RuntimeConfig;
 		GUIObjects.PreviewerObjects.prevImgButton.setEnabled(BufferManager.BUFFER_PREV);
 		GUIObjects.PreviewerObjects.prevDMButton.setText(Config.PREVIEWER_DM_NAMES[RuntimeConfig.getPrevDMNumber()]);
 		GUIObjects.PreviewerObjects.nextDMButton.setText(Config.PREVIEWER_DM_NAMES[RuntimeConfig.getNextDMNumber()]);
+		GUIObjects.PreviewerObjects.pickForegroundButton.setBackground(RuntimeConfig.foreground);
+		GUIObjects.PreviewerObjects.pickBackgroundButton.setBackground(RuntimeConfig.background);
 		DebugMessenger.out("Previous image button is enabled: " + BufferManager.BUFFER_PREV);
 		GUIObjects.PreviewerObjects.threshBotLabel.setText(Integer.toString(RuntimeConfig.previewerDisplayImage.thresh));
 		DebugMessenger.out("Done setting buttons");
@@ -549,9 +581,10 @@ import global.RuntimeConfig;
 
 		while(true) {
 			try {
+				//convert to megs
 				int used = (int) Runtime.getRuntime().totalMemory() / 1024 / 1024;
-				int total = (int) Runtime.getRuntime().maxMemory() / 1024 / 1024;
-				Thread.sleep(100);
+				int total = (int) Runtime.getRuntime().maxMemory() / 1024 / 1024; 
+				Thread.sleep(Config.THREAD_LOOP_WAIT_TIME_MILLIS);
 				String s = used + "M / " + total + "M";
 				memBar.setMaximum(total);
 				memBar.setValue(used);
@@ -562,6 +595,43 @@ import global.RuntimeConfig;
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public void createScanningProgWindowAndScan() {
+		DebugMessenger.out("Creating scanning progress window");
+		JFrame frame = new JFrame(Config.PROGRAM_NAME);
+		JProgressBar progress = new JProgressBar();
+		progress.setPreferredSize(Config.PREVIEWER_PROG_BAR_SIZE);
+		progress.setMaximum(RuntimeConfig.imageFiles.size());
+		frame.add(progress);
+		frame.pack();
+		frame.setVisible(true);
+		PrintWriter outFileWriter = null;
+		try {
+			outFileWriter = new PrintWriter(RuntimeConfig.outputFile);
+		} catch (FileNotFoundException e) {
+			DebugMessenger.out("Something went wrong with creating an output file");
+			e.printStackTrace();
+		}
+		outFileWriter.print("Threshold,");
+		for(int i = 0; i < 100; i += Config.OUTPUT_FILE_THRESHOLD_INC) {
+			outFileWriter.print(i + ",");
+		}
+		outFileWriter.println("100;");
+		for(int imgNum = 0; imgNum < RuntimeConfig.imageFiles.size(); imgNum++) {
+			outFileWriter.print(RuntimeConfig.imageFiles.get(imgNum).getName());
+			for(int thresh = 0; thresh <= 100; thresh += Config.OUTPUT_FILE_THRESHOLD_INC) {
+				BufferedImageContainer bic = new BufferedImageContainer(BufferedImageContainer.DM_MONOCHROME, thresh, imgNum, false);
+				bic.bufferImage();
+				ImageManipulation.countPositive(Color.BLACK, bic.image);
+				bic.unbufferImage();
+				
+			}
+		}
+	}
+	
+	public void createScanningFinishedWindow() {
+		
 	}
 	
 	// ==========================================================================

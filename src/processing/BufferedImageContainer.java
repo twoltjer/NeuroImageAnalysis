@@ -140,14 +140,18 @@ public class BufferedImageContainer {
 	 * Converts the image to the right DM. 
 	 */
 	private void convertImage() {
+		BufferedImage colorImage = image.getSubimage(0, 0, image.getWidth(), image.getHeight());
 		if(this.DM != DM_COLOR) {
 			// Convert to grayscale
 			image = ImageManipulation.convertFromColorToGrayscale(image);
 			if(this.DM == DM_MONOCHROME) {
 				// Convert to monochrome as well
-				image = ImageManipulation.applyThreshold(image, thresh);
+				// Need to reference color version of this image as well, to measure hues
+				
+				image = ImageManipulation.applyThreshold(image, colorImage, thresh);
 			}
 		}
+		colorImage.flush();
 	}
 
 	@Override
